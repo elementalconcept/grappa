@@ -1,7 +1,7 @@
 const uidKey = '__GRAPPA_UID';
 let generator = 0;
 
-export function uid(o: Object) {
+export function UID(o: Object) {
   if (o[ uidKey ] === undefined) {
     Object.defineProperty(o, uidKey, {
       value: ++generator,

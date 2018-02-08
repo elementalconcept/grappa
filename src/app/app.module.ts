@@ -1,8 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { AppComponent } from './app.component';
 import { GrappaModule } from './grappa/grappa.module';
+
+import { AppComponent } from './app.component';
+import { TestClientService } from './services/test-client.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -10,9 +13,10 @@ import { GrappaModule } from './grappa/grappa.module';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     GrappaModule
   ],
-  providers: [],
+  providers: [ TestClientService ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {

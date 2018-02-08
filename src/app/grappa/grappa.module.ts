@@ -4,6 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { RestClientService } from './services/rest-client/rest-client.service';
 
+export let RestClientInstance;
+
 @NgModule({
   imports: [
     CommonModule,
@@ -13,4 +15,7 @@ import { RestClientService } from './services/rest-client/rest-client.service';
   providers: [ RestClientService ]
 })
 export class GrappaModule {
+  constructor(restClient: RestClientService) {
+    RestClientInstance = restClient;
+  }
 }

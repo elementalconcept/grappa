@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TestClientService } from './services/test-client.service';
 
 @Component({
   selector: 'app-root',
@@ -6,4 +7,9 @@ import { Component } from '@angular/core';
   styleUrls: [ './app.component.css' ]
 })
 export class AppComponent {
+  constructor(private client: TestClientService) {
+    console.log('AppComponent::constructor');
+    console.log(client.find);
+    client.find(1);
+  }
 }
