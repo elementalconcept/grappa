@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { GET, POST, RestClient } from '../grappa/decorators';
+import { GET, POST, PUT, RestClient } from '../grappa/decorators';
 
 @Injectable()
 @RestClient('http://localhost:4200/assets')
@@ -13,4 +13,7 @@ export class TestClientService {
 
   @POST('/users')
   create: (user: any) => any;
+
+  @PUT('/users/{0}')
+  update: (id: number, user: any) => any;
 }

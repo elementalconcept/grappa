@@ -12,15 +12,17 @@ export class RestClientService {
   }
 
   request(request: RestRequest): Observable<Object> {
+    const method = request.method.toUpperCase();
+    const body = (method === 'POST' || method === 'PUT') && request.args.length > 0 ? request.args[request.args.length - 1] : undefined;
+
     return this.http
       .request(
-        request.method,
+        method,
         UrlParser.parse(request.baseUrl, request.endpoint, request.args),
         {
-          body: request.body,
+          body: body,
           headers: request.headers,
           params: request.params,
-
           observe: 'response',
           responseType: 'json',
           reportProgress: false
@@ -30,14 +32,11 @@ export class RestClientService {
   }
 }
 
-// encodeURIComponent()
-
 export interface RestRequest {
   baseUrl: string;
   endpoint: string;
   method: string;
   headers: { [header: string]: string; };
   params?: { [param: string]: string; };
-  body?: any;
   args: any[];
 }
