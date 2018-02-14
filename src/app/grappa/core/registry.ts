@@ -11,17 +11,13 @@ class RegistryImpl {
     metd.endpoint = endpoint;
     clsd.methods[ property ] = metd;
 
-    proto[property] = prepareRequest(clsd, property);
+    proto[ property ] = prepareRequest(clsd, property);
   }
 
   registerClass(baseUrl: string, constructor: Initialisable) {
     const clsd = this.getClassDescriptor(constructor.prototype);
     clsd.ctor = constructor;
     clsd.baseUrl = baseUrl;
-
-    console.log('registerClass', constructor instanceof Object);
-    console.log('registerClass', constructor instanceof Function);
-    console.log(this.classes);
   }
 
   getClassDescriptor(proto: any): ClassDescriptor {
@@ -39,10 +35,22 @@ class RegistryImpl {
 
 function prepareRequest(clsd: ClassDescriptor, property: string) {
   return (...args: any[]) => {
+    if (!clsd.methods.hasOwnProperty(property)) {
+      throw new ReferenceError(`REST function "${property}" is not defined for ${clsd.ctor.name}.`);
+    }
+
     console.log(clsd);
     console.log(property);
-    console.log(args);
-    console.log(RestClientInstance);
+
+    const func = clsd.methods[ property ];
+
+    return RestClientInstance.request({
+      baseUrl: clsd.baseUrl,
+      endpoint: func.endpoint,
+      method: func.method,
+      args: args,
+      headers: {}
+    });
   };
 }
 

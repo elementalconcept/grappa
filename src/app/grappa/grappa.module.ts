@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { RestClientService } from './services/rest-client/rest-client.service';
 
-export let RestClientInstance;
+export let RestClientInstance: RestClientService;
 
 @NgModule({
   imports: [
