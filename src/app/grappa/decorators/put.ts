@@ -1,4 +1,4 @@
-import { Registry } from '../core/registry';
+import { Registry } from '../core/registry/registry';
 
 export function PUT(endpoint: string) {
   return (target: any, property: string) => {

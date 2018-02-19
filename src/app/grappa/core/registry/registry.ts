@@ -1,5 +1,5 @@
-import { UID } from './uid/uid';
-import { RestClientInstance } from '../grappa.module';
+import { UID } from '../uid/uid';
+import { RestClientInstance } from '../../grappa.module';
 
 class RegistryImpl {
   private classes: { [key: string]: ClassDescriptor } = {};
