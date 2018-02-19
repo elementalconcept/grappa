@@ -1,4 +1,4 @@
-import { UID } from './uid';
+import { UID } from './uid/uid';
 import { RestClientInstance } from '../grappa.module';
 
 class RegistryImpl {
