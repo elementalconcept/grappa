@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { UrlParser } from '../../core/url-parser';
+import { UrlParser } from '../../core/url-parser/url-parser';
 
 @Injectable()
 export class RestClientService {
