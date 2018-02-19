@@ -1,7 +1,7 @@
 export class UrlParser {
   private static readonly SlashSuffix = /[\\/]*$/;
   private static readonly SlashPrefix = /^[\\/]*/;
-  private static readonly Placeholder = /{([0-9]+)}/;
+  private static readonly Placeholder = /{([0-9]+)}/g;
 
   static parse(baseUrl: string, endpoint: string, args: any[]) {
     return UrlParser
