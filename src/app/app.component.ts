@@ -8,6 +8,6 @@ import { TestClientService } from './services/test-client.service';
 })
 export class AppComponent {
   constructor(private client: TestClientService) {
-    client.update(123, {abc: 'xyz'}).subscribe();
+    client.find(123).subscribe();
   }
 }
