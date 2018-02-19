@@ -2,6 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { TestClientService } from './test-client.service';
 
+/*
 describe('TestClientService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -13,3 +14,4 @@ describe('TestClientService', () => {
     expect(service).toBeTruthy();
   }));
 });
+*/
