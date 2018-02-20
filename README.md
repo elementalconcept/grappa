@@ -83,9 +83,8 @@ export class UserService {
 
 Decorators on a class and its properties define how a request will be handled.
 
-### @RestClient
+### `@RestClient(baseUrl: string = '')`
 
-`@RestClient(baseUrl: string = '')`
 Optional decorator which allows to define base URL for all REST methods in a class.
 If decorator is not present or `baseUrl` argument is empty string, `null` or `undefined`,
 then it is assumed that property decorators will contain full URLs.
