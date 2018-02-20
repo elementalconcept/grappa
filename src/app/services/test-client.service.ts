@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { GET, POST, PUT, RestClient } from '../grappa/decorators';
+import { AfterRequest, BeforeRequest, GET, POST, PUT, RestClient } from '../grappa/decorators';
 import { Observable } from 'rxjs/Observable';
-import { BeforeRequest } from '../grappa/decorators/before-request';
 
 @Injectable()
 @RestClient('http://localhost:4200/assets')
@@ -22,5 +21,10 @@ export class TestClientService {
   @BeforeRequest()
   beforeFilter() {
     console.log('beforeFilter', this);
+  }
+
+  @AfterRequest()
+  afterFilter() {
+    console.log('afterFilter', this);
   }
 }
