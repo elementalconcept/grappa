@@ -1,5 +1,60 @@
 # Grappa
 
+Decorator-powered REST client for Angular 5 and its HttpClient.
+
+## Introduction
+
+Grappa minimises boiler-plate code required for REST clients and streamlines request and response
+modifications with filters. Simply define a list of methods which reflect REST API:
+
+```javascript
+@Injectable()
+@RestClient('http://example.com/api/')
+export class UserService {
+  @GET('/users')
+  list: () => Observable<User[]>;
+
+  @GET('/users/{0}')
+  find: (id: number) => Observable<User>;
+
+  @POST('/users')
+  create: (user: User) => Observable<User>;
+
+  @PUT('/users/{0}')
+  update: (id: number, user: User) => Observable<User>;
+}
+```
+
+Grappa will auto-generate required class methods which can be easily called from any component:
+
+```javascript
+@Component({
+  // ...
+})
+export class AppComponent {
+  constructor(private userService: UserService) {
+    userService.find(42).subscribe(user => console.log(user));
+  }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.4.
 
 ## Development server
