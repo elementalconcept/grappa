@@ -38,6 +38,45 @@ export class AppComponent {
 }
 ```
 
+Define `@BeforeRequest()` filter methods to uniformly modify data being sent to the API.
+JWT injection is a good example: 
+
+```javascript
+@Injectable()
+@RestClient('http://example.com/api/')
+export class UserService {
+  // ...
+  
+  constructor(private authService: AuthService) {}
+  
+  @BeforeRequest()
+  jwtFilter(request: RestRequest) {
+    request.headers[ 'Authorization' ] = this.authService.getJWT();
+  }
+}
+```
+
+Use `@AfterRequest()` to transform responses and inject global error handlers:
+
+```javascript
+@Injectable()
+@RestClient('http://example.com/api/')
+export class UserService {
+  // ...
+  
+  @AfterRequest()
+  tranformResponse(response: Observable<HttpResponse<any>>) {
+    return response.map(r => User.fromResponse(r.body));
+  }
+  
+  @AfterRequest()
+  handleErrors(response: Observable<HttpResponse<any>>) {
+    return response.catch(error => {
+      alert('Error!');
+      return Observable.of(error);
+    });
+  }
+}
 
 
 
