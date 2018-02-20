@@ -14,11 +14,18 @@ class Test4 {
 
 describe('UID', () => {
   it('should generate unique class IDs', () => {
-    expect(UID(Test1)).toBe(1);
-    expect(UID(Test2)).toBe(2);
-    expect(UID(Test3)).toBe(3);
-    expect(UID(Test2)).toBe(2);
-    expect(UID(Test1)).toBe(1);
-    expect(UID(Test4)).toBe(4);
+    const uid1 = UID(Test1);
+    const uid2 = UID(Test2);
+    const uid3 = UID(Test3);
+    const uid4 = UID(Test4);
+
+    expect(uid1).not.toBe(uid2);
+    expect(uid1).not.toBe(uid3);
+    expect(uid1).not.toBe(uid4);
+
+    expect(uid2).not.toBe(uid3);
+    expect(uid2).not.toBe(uid4);
+
+    expect(uid3).not.toBe(uid4);
   });
 });
