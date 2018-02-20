@@ -8,6 +8,6 @@ import { TestClientService } from './services/test-client.service';
 })
 export class AppComponent {
   constructor(private client: TestClientService) {
-    client.find(123).subscribe();
+    client.find(123).subscribe(res => console.log(res));
   }
 }
