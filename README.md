@@ -46,9 +46,9 @@ JWT injection is a good example:
 @RestClient('http://example.com/api/')
 export class UserService {
   // ...
-  
+
   constructor(private authService: AuthService) {}
-  
+
   @BeforeRequest()
   jwtFilter(request: RestRequest) {
     request.headers[ 'Authorization' ] = this.authService.getJWT();
@@ -63,12 +63,12 @@ Use `@AfterRequest()` to transform responses and inject global error handlers:
 @RestClient('http://example.com/api/')
 export class UserService {
   // ...
-  
+
   @AfterRequest()
   tranformResponse(response: Observable<HttpResponse<any>>) {
     return response.map(r => User.fromResponse(r.body));
   }
-  
+
   @AfterRequest()
   handleErrors(response: Observable<HttpResponse<any>>) {
     return response.catch(error => {
@@ -76,6 +76,38 @@ export class UserService {
       return Observable.of(error);
     });
   }
+}
+```
+
+## API
+
+Decorators on a class and its properties define how a request will be handled.
+
+### @RestClient
+
+`@RestClient(baseUrl: string = '')`
+Optional decorator which allows to define base URL for all REST methods in a class.
+If decorator is not present or `baseUrl` argument is empty string, `null` or `undefined`,
+then it is assumed that property decorators will contain full URLs.
+
+Example with `@RestClient`:
+
+```javascript
+@Injectable()
+@RestClient('http://example.com/api/')
+export class UserService {
+  @GET('/users')
+  list: () => Observable<User[]>; // List method will call http://example.com/api/users
+}
+```
+
+Example without `@RestClient`:
+
+```javascript
+@Injectable()
+export class UserService {
+  @GET('http://somedomain.org/users')
+  list: () => Observable<User[]>; // List method will call http://somedomain.org/users
 }
 ```
 
