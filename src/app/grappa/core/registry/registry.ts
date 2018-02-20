@@ -1,5 +1,6 @@
 import { UID } from '../uid/uid';
 import { RestClientInstance } from '../../grappa.module';
+import { RestRequest } from '../../services/rest-client/rest-client.service';
 
 class RegistryImpl {
   private classes: { [key: string]: ClassDescriptor } = {};
@@ -20,6 +21,14 @@ class RegistryImpl {
     clsd.baseUrl = baseUrl;
   }
 
+  registerBeforeFilter(proto: any, method: Function) {
+    this.getClassDescriptor(proto).filtersBefore.push(method);
+  }
+
+  registerAfterFilter(proto: any, method: Function) {
+    this.getClassDescriptor(proto).filtersAfter.push(method);
+  }
+
   getClassDescriptor(proto: any): ClassDescriptor {
     const uid = UID(proto);
     let clsd = this.classes[ uid ];
@@ -34,20 +43,25 @@ class RegistryImpl {
 }
 
 function prepareRequest(clsd: ClassDescriptor, property: string) {
-  return (...args: any[]) => {
+  return function (...args: any[]) {
     if (!clsd.methods.hasOwnProperty(property)) {
       throw new ReferenceError(`REST function "${property}" is not defined for ${clsd.ctor.name}.`);
     }
 
     const func = clsd.methods[ property ];
-
-    return RestClientInstance.request({
+    const request: RestRequest = {
       baseUrl: clsd.baseUrl,
       endpoint: func.endpoint,
       method: func.method,
       args: args,
       headers: {}
-    });
+    };
+
+    for (const filter of clsd.filtersBefore) {
+      filter.call(this, request, args);
+    }
+
+    return RestClientInstance.request(request);
   };
 }
 
@@ -55,6 +69,8 @@ class ClassDescriptor {
   baseUrl: string;
   ctor: Function;
   methods: { [key: string]: MethodDescriptor } = {};
+  filtersBefore: Function[] = [];
+  filtersAfter: Function[] = [];
 
   constructor(public uid: number, public proto: Object) {
   }
