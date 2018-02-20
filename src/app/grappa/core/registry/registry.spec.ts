@@ -1,4 +1,6 @@
 import { DELETE, GET, POST, RestClient } from '../../decorators';
+import { Registry } from './registry';
+import { UID } from '../uid/uid';
 
 @RestClient('http://localhost/')
 class TestClient {
@@ -23,5 +25,11 @@ describe('Registry', () => {
     expect(typeof testClient.createUser).toBe('function');
     expect(typeof testClient.updateUser).toBe('function');
     expect(typeof testClient.deleteUser).toBe('function');
+  });
+
+  it('should define base URL through @RestClient', () => {
+    const uid = UID(TestClient.prototype);
+    expect((<any>Registry).classes[ uid ]).toBeDefined();
+    expect((<any>Registry).classes[ uid ].baseUrl).toBe('http://localhost/');
   });
 });
