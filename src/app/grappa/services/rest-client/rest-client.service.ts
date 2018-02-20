@@ -11,11 +11,11 @@ export class RestClientService {
   constructor(private http: HttpClient) {
   }
 
-  request(request: RestRequest): Observable<Object> {
+  request(request: RestRequest, returnResponse: boolean = false): Observable<Object> {
     const method = request.method.toUpperCase();
-    const body = (method === 'POST' || method === 'PUT') && request.args.length > 0 ? request.args[request.args.length - 1] : undefined;
+    const body = (method === 'POST' || method === 'PUT') && request.args.length > 0 ? request.args[ request.args.length - 1 ] : undefined;
 
-    return this.http
+    const result = this.http
       .request(
         method,
         UrlParser.parse(request.baseUrl, request.endpoint, request.args),
@@ -27,8 +27,9 @@ export class RestClientService {
           responseType: 'json',
           reportProgress: false
         }
-      )
-      .map(response => response.body);
+      );
+
+    return returnResponse ? result : result.map(response => response.body);
   }
 }
 

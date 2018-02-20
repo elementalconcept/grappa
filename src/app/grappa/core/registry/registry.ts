@@ -58,10 +58,15 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
     };
 
     for (const filter of clsd.filtersBefore) {
-      filter.call(this, request, args);
+      filter.call(this, request);
     }
 
-    return RestClientInstance.request(request);
+    let response = RestClientInstance.request(request, clsd.filtersAfter.length > 0);
+    for (const filter of clsd.filtersAfter) {
+      response = filter.call(this, response);
+    }
+
+    return response;
   };
 }
 
