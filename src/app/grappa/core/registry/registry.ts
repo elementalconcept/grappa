@@ -39,9 +39,6 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
       throw new ReferenceError(`REST function "${property}" is not defined for ${clsd.ctor.name}.`);
     }
 
-    console.log(clsd);
-    console.log(property);
-
     const func = clsd.methods[ property ];
 
     return RestClientInstance.request({
