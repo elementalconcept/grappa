@@ -11,7 +11,7 @@ export class RestClientService {
   constructor(private http: HttpClient) {
   }
 
-  request(request: RestRequest, returnResponse: boolean = false): Observable<Object> {
+  request(request: RestRequest, returnResponse: boolean = false): Observable<any> {
     const method = request.method.toUpperCase();
     const body = (method === 'POST' || method === 'PUT') && request.args.length > 0 ? request.args[ request.args.length - 1 ] : undefined;
 
