@@ -110,6 +110,16 @@ export class UserService {
 }
 ```
 
+### `@GET(endpoint: string)`
+
+Makes HTTP GET request to the specified end-point. Arguments passed to the decorated function can be
+inserted into end-point URL using index based templates. Indices start at 0. Example:
+
+```javascript
+@GET('/users/{0}/posts?page={1}')
+getUserPosts: (userId: number, page: number) => Observable<Post[]>;
+```
+
 
 
 
