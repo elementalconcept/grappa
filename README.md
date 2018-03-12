@@ -165,7 +165,7 @@ beforeFilter(request: RestRequest) {
 }
 ```
 
-### `@BeforeRequest()`
+### `@AfterRequest()`
 
 Runs decorated method after every request in a class.
 
