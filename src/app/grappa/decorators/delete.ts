@@ -1,7 +1,7 @@
 import { Registry } from '../core/registry/registry';
-import { Options } from './options';
+import { RequestOptions } from './options';
 
-export function DELETE(endpoint: string, options: Options = {}) {
+export function DELETE(endpoint: string, options: RequestOptions = {}) {
   return (target: any, property: string) => {
     Registry.registerRequest('DELETE', endpoint, target, property);
   };

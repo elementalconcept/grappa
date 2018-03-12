@@ -1,7 +1,7 @@
 import { Registry } from '../core/registry/registry';
-import { Options } from './options';
+import { RequestOptions } from './options';
 
-export function GET(endpoint: string, options: Options = {}) {
+export function GET(endpoint: string, options: RequestOptions = {}) {
   return (target: any, property: string) => {
     Registry.registerRequest('GET', endpoint, target, property);
   };
