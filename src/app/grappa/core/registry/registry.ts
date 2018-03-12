@@ -1,15 +1,17 @@
 import { UID } from '../uid/uid';
 import { RestClientInstance } from '../../grappa.module';
 import { RestRequest } from '../../services/rest-client/rest-client.service';
+import { RequestOptions } from '../../decorators/options';
 
 class RegistryImpl {
   private classes: { [key: string]: ClassDescriptor } = {};
 
-  registerRequest(method: string, endpoint: string, proto: any, property: string) {
+  registerRequest(method: string, endpoint: string, proto: any, property: string, options: RequestOptions) {
     const clsd = this.getClassDescriptor(proto);
     const metd = new MethodDescriptor();
     metd.method = method;
     metd.endpoint = endpoint;
+    metd.options = options;
     clsd.methods[ property ] = metd;
 
     proto[ property ] = prepareRequest(clsd, property);
@@ -84,6 +86,7 @@ class ClassDescriptor {
 class MethodDescriptor {
   method: string;
   endpoint: string;
+  options: RequestOptions;
 }
 
 export interface Initialisable {
