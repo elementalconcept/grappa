@@ -120,6 +120,40 @@ inserted into end-point URL using index based templates. Indices start at 0. Exa
 getUserPosts: (userId: number, page: number) => Observable<Post[]>;
 ```
 
+`{0}` will be replaced with `userId` value and `{1}` will be replaced with `page` value.
+
+### `@POST(endpoint: string)`
+
+Makes HTTP POST request to the specified end-point. Arguments passed to the decorated function can be
+inserted into end-point URL using index based templates. Indices start at 0. Last function argument will be used
+as a POST body. 
+
+```javascript
+@POST('/users')
+create: (user: User) => Observable<User>;
+```
+
+### `@PUT(endpoint: string)`
+
+Makes HTTP PUT request to the specified end-point. Arguments passed to the decorated function can be
+inserted into end-point URL using index based templates. Indices start at 0. Last function argument will be used
+as a PUT body. 
+
+```javascript
+@PUT('/users/{0}')
+update: (userId: number. user: User) => Observable<User>;
+```
+
+### `@DELETE(endpoint: string)`
+
+Makes HTTP DELETE request to the specified end-point. Arguments passed to the decorated function can be
+inserted into end-point URL using index based templates. Indices start at 0. Example:
+
+```javascript
+@DELETE('/users/{0}')
+remove: (userId: number) => Observable<User>;
+```
+
 
 
 
