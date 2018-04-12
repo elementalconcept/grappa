@@ -11,7 +11,7 @@ import { RestRequest } from '../grappa/services/rest-client/rest-client.service'
 @Injectable()
 @RestClient('http://localhost:4200/assets')
 export class TestClientService {
-  @GET('/users')
+  @GET('/users.json')
   list: () => Observable<any>;
 
   @GET('/users/{0}', { observe: ObserveOptions.Response })
@@ -23,7 +23,7 @@ export class TestClientService {
   @PUT('/users/{0}')
   update: (id: number, user: any) => Observable<any>;
 
-  @BeforeRequest()
+  @BeforeRequest('find')
   beforeFilter(request: RestRequest) {
     request.headers[ 'X-Dummy' ] = 'Abcde';
   }

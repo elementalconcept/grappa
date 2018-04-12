@@ -25,12 +25,12 @@ class RegistryImpl {
     clsd.baseUrl = baseUrl;
   }
 
-  registerBeforeFilter(proto: any, method: Function) {
-    this.getClassDescriptor(proto).filtersBefore.push(method);
+  registerBeforeFilter(proto: any, method: Function, applyTo: OptionalList<string>) {
+    this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo: applyTo });
   }
 
-  registerAfterFilter(proto: any, method: Function) {
-    this.getClassDescriptor(proto).filtersAfter.push(method);
+  registerAfterFilter(proto: any, method: Function, applyTo: OptionalList<string>) {
+    this.getClassDescriptor(proto).filtersAfter.push({ filterFunction: method, applyTo: applyTo });
   }
 
   getClassDescriptor(proto: any): ClassDescriptor {
@@ -62,24 +62,37 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
     };
 
     for (const filter of clsd.filtersBefore) {
-      filter.call(this, request);
+      if (isAppliable(filter, property)) {
+        filter.filterFunction.call(this, request);
+      }
     }
 
     let response = RestClientInstance.request(request, metd.options.observe);
     for (const filter of clsd.filtersAfter) {
-      response = filter.call(this, response);
+      if (isAppliable(filter, property)) {
+        response = filter.filterFunction.call(this, response);
+      }
     }
 
     return response;
   };
 }
 
+function isAppliable(filter: FilterDescriptor, property: string) {
+  if (filter.applyTo === null) {
+    return true;
+  }
+
+  const nameList = typeof filter.applyTo === 'string' ? [ filter.applyTo ] : filter.applyTo;
+  return nameList.indexOf(property) >= 0;
+}
+
 class ClassDescriptor {
   baseUrl: string;
   ctor: Function;
   methods: { [ key: string ]: MethodDescriptor } = {};
-  filtersBefore: Function[] = [];
-  filtersAfter: Function[] = [];
+  filtersBefore: FilterDescriptor[] = [];
+  filtersAfter: FilterDescriptor[] = [];
 
   constructor(public uid: number, public proto: Object) {
   }
@@ -90,6 +103,13 @@ class MethodDescriptor {
   endpoint: string;
   options: RequestOptions;
 }
+
+interface FilterDescriptor {
+  filterFunction: Function;
+  applyTo: OptionalList<string>;
+}
+
+export type OptionalList<T> = T | T[] | null;
 
 export interface Initialisable {
   new(...args: any[]);
