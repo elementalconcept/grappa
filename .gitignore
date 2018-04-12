@@ -22,6 +22,8 @@
 /coverage
 /*.log
 /typings
+/staging
+/.ng_pkg_build
 
 # System Files
 .DS_Store

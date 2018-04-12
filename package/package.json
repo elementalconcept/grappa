@@ -1,0 +1,21 @@
+{
+  "name": "@elemental-concept/grappa",
+  "version": "0.0.0",
+  "description": "Decorator-powered REST client for Angular 5 and its HttpClient",
+  "author": "Elemental Concept",
+  "homepage": "https://github.com/elementalconcept/grappa#readme",
+  "license": "BSD-2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elementalconcept/grappa.git"
+  },
+  "bugs": {
+    "url": "https://github.com/elementalconcept/grappa/issues"
+  },
+  "peerDependencies": {
+    "@angular/common": "^5.0.0",
+    "@angular/core": "^5.0.0",
+    "@angular/http": "^5.0.0",
+    "rxjs": "^5.5.0"
+  }
+}

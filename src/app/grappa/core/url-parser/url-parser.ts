@@ -1,3 +1,4 @@
+// @dynamic
 export class UrlParser {
   private static readonly SlashSuffix = /[\\/]*$/;
   private static readonly SlashPrefix = /^[\\/]*/;

@@ -3,7 +3,7 @@ import { RestClientInstance } from '../../grappa.module';
 import { RestRequest } from '../../services/rest-client/rest-client.service';
 import { ObserveOptions, RequestOptions } from '../../decorators/options';
 
-class RegistryImpl {
+export class RegistryImpl {
   private static readonly defaultRequestOptions: RequestOptions = { observe: ObserveOptions.Body };
 
   private classes: { [ key: string ]: ClassDescriptor } = {};
@@ -87,7 +87,7 @@ function isAppliable(filter: FilterDescriptor, property: string) {
   return nameList.indexOf(property) >= 0;
 }
 
-class ClassDescriptor {
+export class ClassDescriptor {
   baseUrl: string;
   ctor: Function;
   methods: { [ key: string ]: MethodDescriptor } = {};
@@ -98,13 +98,13 @@ class ClassDescriptor {
   }
 }
 
-class MethodDescriptor {
+export class MethodDescriptor {
   method: string;
   endpoint: string;
   options: RequestOptions;
 }
 
-interface FilterDescriptor {
+export interface FilterDescriptor {
   filterFunction: Function;
   applyTo: OptionalList<string>;
 }
