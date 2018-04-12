@@ -1,7 +1,7 @@
-import { Registry } from '../core/registry/registry';
+import { OptionalList, Registry } from '../core/registry/registry';
 
-export function AfterRequest() {
+export function AfterRequest(applyTo: OptionalList<string> = null) {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-    Registry.registerAfterFilter(target, descriptor.value);
+    Registry.registerAfterFilter(target, descriptor.value, applyTo);
   };
 }
