@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 
-import { AfterRequest, BeforeRequest, GET, POST, PUT, RestClient } from '../grappa/decorators';
 import { Observable } from 'rxjs/Observable';
+
+import { AfterRequest, BeforeRequest, GET, POST, PUT, RestClient } from '../grappa/decorators';
+import { ObserveOptions } from '../grappa/decorators/options';
+
 import { RestRequest } from '../grappa/services/rest-client/rest-client.service';
 
 @Injectable()
@@ -11,7 +14,7 @@ export class TestClientService {
   @GET('/users')
   list: () => Observable<any>;
 
-  @GET('/users/{0}')
+  @GET('/users/{0}', { observe: ObserveOptions.Response })
   find: (id: number) => Observable<any>;
 
   @POST('/users')
