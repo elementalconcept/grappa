@@ -1,17 +1,19 @@
 import { UID } from '../uid/uid';
 import { RestClientInstance } from '../../grappa.module';
 import { RestRequest } from '../../services/rest-client/rest-client.service';
-import { RequestOptions } from '../../decorators/options';
+import { ObserveOptions, RequestOptions } from '../../decorators/options';
 
 class RegistryImpl {
-  private classes: { [key: string]: ClassDescriptor } = {};
+  private static readonly defaultRequestOptions: RequestOptions = { observe: ObserveOptions.Body };
+
+  private classes: { [ key: string ]: ClassDescriptor } = {};
 
   registerRequest(method: string, endpoint: string, proto: any, property: string, options: RequestOptions) {
     const clsd = this.getClassDescriptor(proto);
     const metd = new MethodDescriptor();
     metd.method = method;
     metd.endpoint = endpoint;
-    metd.options = options;
+    metd.options = Object.assign({}, RegistryImpl.defaultRequestOptions, options);
     clsd.methods[ property ] = metd;
 
     proto[ property ] = prepareRequest(clsd, property);
@@ -50,11 +52,11 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
       throw new ReferenceError(`REST function "${property}" is not defined for ${clsd.ctor.name}.`);
     }
 
-    const func = clsd.methods[ property ];
+    const metd = clsd.methods[ property ];
     const request: RestRequest = {
       baseUrl: clsd.baseUrl,
-      endpoint: func.endpoint,
-      method: func.method,
+      endpoint: metd.endpoint,
+      method: metd.method,
       args: args,
       headers: {}
     };
@@ -63,7 +65,7 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
       filter.call(this, request);
     }
 
-    let response = RestClientInstance.request(request, clsd.filtersAfter.length > 0);
+    let response = RestClientInstance.request(request, metd.options.observe);
     for (const filter of clsd.filtersAfter) {
       response = filter.call(this, response);
     }
@@ -75,7 +77,7 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
 class ClassDescriptor {
   baseUrl: string;
   ctor: Function;
-  methods: { [key: string]: MethodDescriptor } = {};
+  methods: { [ key: string ]: MethodDescriptor } = {};
   filtersBefore: Function[] = [];
   filtersAfter: Function[] = [];
 
