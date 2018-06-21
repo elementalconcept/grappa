@@ -2,6 +2,20 @@
 
 Decorator-powered REST client for Angular 5 and its HttpClient.
 
+## Installation
+
+With npm:
+
+```Shell
+$ npm i --save @elemental-concept/grappa
+```
+
+With Yarn:
+
+```Shell
+$ yarn add @elemental-concept/grappa
+```
+
 ## Introduction
 
 Grappa minimises boiler-plate code required for REST clients and streamlines request and response
