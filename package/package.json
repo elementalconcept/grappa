@@ -13,9 +13,9 @@
     "url": "https://github.com/elementalconcept/grappa/issues"
   },
   "peerDependencies": {
-    "@angular/common": ">= 5.0.0 < 7",
-    "@angular/core": ">= 5.0.0 < 7",
-    "@angular/http": ">= 5.0.0 < 7",
-    "rxjs": ">= 5.5.0 < 7"
+    "@angular/common": ">= 6.0.0 < 7",
+    "@angular/core": ">= 6.0.0 < 7",
+    "@angular/http": ">= 6.0.0 < 7",
+    "rxjs": ">= 6.0.0 < 7"
   }
 }

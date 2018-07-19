@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { AfterRequest, BeforeRequest, GET, POST, PUT, RestClient } from '../grappa/decorators';
 import { ObserveOptions } from '../grappa/decorators/options';
 
-import { RestRequest } from '../grappa/services/rest-client/rest-client.service';
+import { RestRequest } from '../grappa/core/models/rest-request';
 
 @Injectable()
 @RestClient('http://localhost:4200/assets')
@@ -30,6 +31,6 @@ export class TestClientService {
 
   @AfterRequest()
   afterFilter(response: Observable<HttpResponse<Object>>) {
-    return response.map(r => r.body);
+    return response.pipe(map(r => r.body));
   }
 }
