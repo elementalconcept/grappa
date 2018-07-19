@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 import { UrlParser } from '../../core/url-parser/url-parser';
 import { ObserveOptions } from '../../decorators/options';
+import { RestRequest } from '../../core/models/rest-request';
 
 @Injectable()
 export class RestClientService {
@@ -14,11 +15,12 @@ export class RestClientService {
   request(request: RestRequest, observe: ObserveOptions): Observable<any> {
     const method = request.method.toUpperCase();
     const body = (method === 'POST' || method === 'PUT') && request.args.length > 0 ? request.args[ request.args.length - 1 ] : undefined;
+    const baseUrl = typeof request.baseUrl === 'function' ? request.baseUrl() : request.baseUrl;
 
     const result = this.http
       .request(
         method,
-        UrlParser.parse(request.baseUrl, request.endpoint, request.args),
+        UrlParser.parse(baseUrl, request.endpoint, request.args),
         {
           body: body,
           headers: request.headers,
@@ -33,11 +35,3 @@ export class RestClientService {
   }
 }
 
-export interface RestRequest {
-  baseUrl: string;
-  endpoint: string;
-  method: string;
-  headers: { [header: string]: string; };
-  params?: { [param: string]: string; };
-  args: any[];
-}

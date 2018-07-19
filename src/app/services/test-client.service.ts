@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { AfterRequest, BeforeRequest, GET, POST, PUT, RestClient } from '../grappa/decorators';
 import { ObserveOptions } from '../grappa/decorators/options';
 
-import { RestRequest } from '../grappa/services/rest-client/rest-client.service';
+import { RestRequest } from '../grappa/core/models/rest-request';
 
 @Injectable()
 @RestClient('http://localhost:4200/assets')

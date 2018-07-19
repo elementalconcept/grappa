@@ -1,6 +1,6 @@
 import { UID } from '../uid/uid';
 import { RestClientInstance } from '../../grappa.module';
-import { RestRequest } from '../../services/rest-client/rest-client.service';
+import { RestRequest } from '../models/rest-request';
 import { ObserveOptions, RequestOptions } from '../../decorators/options';
 
 export class RegistryImpl {
@@ -19,7 +19,7 @@ export class RegistryImpl {
     proto[ property ] = prepareRequest(clsd, property);
   }
 
-  registerClass(baseUrl: string, constructor: Initialisable) {
+  registerClass(baseUrl: UrlInput, constructor: Initialisable) {
     const clsd = this.getClassDescriptor(constructor.prototype);
     clsd.ctor = constructor;
     clsd.baseUrl = baseUrl;
@@ -88,7 +88,7 @@ function isAppliable(filter: FilterDescriptor, property: string) {
 }
 
 export class ClassDescriptor {
-  baseUrl: string;
+  baseUrl: UrlInput;
   ctor: Function;
   methods: { [ key: string ]: MethodDescriptor } = {};
   filtersBefore: FilterDescriptor[] = [];
@@ -114,5 +114,8 @@ export type OptionalList<T> = T | T[] | null;
 export interface Initialisable {
   new(...args: any[]);
 }
+
+export type UrlFactory = () => string;
+export type UrlInput = string | UrlFactory;
 
 export const Registry = new RegistryImpl();
