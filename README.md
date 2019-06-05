@@ -124,7 +124,7 @@ export class UserService {
 }
 ```
 
-### `@GET(endpoint: string)`
+### `@GET(endpoint: string, options: RequestOptions = {})`
 
 Makes HTTP GET request to the specified end-point. Arguments passed to the decorated function can be
 inserted into end-point URL using index based templates. Indices start at 0. Example:
@@ -136,7 +136,7 @@ getUserPosts: (userId: number, page: number) => Observable<Post[]>;
 
 `{0}` will be replaced with `userId` value and `{1}` will be replaced with `page` value.
 
-### `@POST(endpoint: string)`
+### `@POST(endpoint: string, options: RequestOptions = {})`
 
 Makes HTTP POST request to the specified end-point. Arguments passed to the decorated function can be
 inserted into end-point URL using index based templates. Indices start at 0. Last function argument will be used
@@ -147,18 +147,18 @@ as a POST body.
 create: (user: User) => Observable<User>;
 ```
 
-### `@PUT(endpoint: string)`
+### `@PUT(endpoint: string, options: RequestOptions = {})`
 
 Makes HTTP PUT request to the specified end-point. Arguments passed to the decorated function can be
 inserted into end-point URL using index based templates. Indices start at 0. Last function argument will be used
 as a PUT body. 
 
 ```javascript
-@PUT('/users/{0}')
+@PUT('/users/{0}', options: RequestOptions = {})
 update: (userId: number. user: User) => Observable<User>;
 ```
 
-### `@DELETE(endpoint: string)`
+### `@DELETE(endpoint: string, options: RequestOptions = {})`
 
 Makes HTTP DELETE request to the specified end-point. Arguments passed to the decorated function can be
 inserted into end-point URL using index based templates. Indices start at 0. Example:
@@ -168,7 +168,7 @@ inserted into end-point URL using index based templates. Indices start at 0. Exa
 remove: (userId: number) => Observable<User>;
 ```
 
-### `@BeforeRequest()`
+### `@BeforeRequest(applyTo: OptionalList<string> = null)`
 
 Runs decorated method before every request in a class.
 
@@ -179,7 +179,7 @@ beforeFilter(request: RestRequest) {
 }
 ```
 
-### `@AfterRequest()`
+### `@AfterRequest(applyTo: OptionalList<string> = null)`
 
 Runs decorated method after every request in a class.
 
@@ -187,5 +187,43 @@ Runs decorated method after every request in a class.
 @AfterRequest()
 afterFilter(response: Observable<HttpResponse<any>>) {
   return response.map(r => r.body.value);
+}
+```
+
+### RequestOptions
+
+Configuration for specific GET, POST, PUT and DELETE requests.
+
+```javascript
+export interface RequestOptions {
+  observe?: ObserveOptions;
+}
+
+export enum ObserveOptions {
+  Body = 'body',
+  Response = 'response'
+}
+```
+
+### OptionalList<string>
+
+Allows to specify the names of request methods specific filter should apply.
+
+```javascript
+export type OptionalList<T> = T | T[] | null;
+```
+
+Usage:
+
+```javascript
+@GET('/users')
+get: () => Observable<User[]>;
+
+@POST('/users')
+create: (user: User) => Observable<User>;
+
+@BeforeRequest('create')
+beforeFilter(request: RestRequest) {
+  // This filter function will only apply to create() calls
 }
 ```

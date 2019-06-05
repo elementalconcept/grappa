@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { AfterRequest, BeforeRequest, GET, POST, PUT, RestClient } from '../grappa/decorators';
-import { ObserveOptions } from '../grappa/decorators/options';
+// TODO Refactor imports
+import { AfterRequest, BeforeRequest, GET, POST, PUT, RestClient } from '../../../projects/lib/src/lib/public/decorators';
+import { ObserveOptions, RestRequest } from '../../../projects/lib/src/lib/public/models';
 
-import { RestRequest } from '../grappa/core/models/rest-request';
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 @RestClient('http://localhost:4200/assets')
 export class TestClientService {
   @GET('/users.json')
@@ -30,7 +28,7 @@ export class TestClientService {
   }
 
   @AfterRequest()
-  afterFilter(response: Observable<HttpResponse<Object>>) {
-    return response.pipe(map(r => r.body));
+  afterFilter(response: Observable<any>) {
+    return response.pipe(map(r => r));
   }
 }
