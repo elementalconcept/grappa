@@ -1,6 +1,21 @@
 import { async, TestBed } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
+import { TestClientService } from './services/test-client.service';
+import { Observable, of } from 'rxjs';
+
+class TestClientServiceMock {
+  find(id: number): Observable<any> {
+    return of({ id });
+  }
+
+  list(): Observable<any[]> {
+    return of([
+      { id: 1 },
+      { id: 2 }
+    ]);
+  }
+}
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -9,6 +24,9 @@ describe('AppComponent', () => {
         declarations: [
           AppComponent
         ],
+        providers: [
+          { provide: TestClientService, useClass: TestClientServiceMock }
+        ]
       })
       .compileComponents()
       .then();
@@ -18,18 +36,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'grappa'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('grappa');
-  });
-
-  it('should render title in a h1 tag', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to grappa!');
   });
 });
