@@ -2,6 +2,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { RestClientService } from './rest-client.service';
+import { ObserveOptions } from '../../public/models';
 
 describe('RestClientService', () => {
   beforeEach(() => {
@@ -15,13 +16,15 @@ describe('RestClientService', () => {
     [ RestClientService, HttpTestingController ],
     (service: RestClientService, http: HttpTestingController) => {
       service
-        .request({
-          baseUrl: 'http://localhost',
-          endpoint: 'user/{0}',
-          method: 'GET',
-          headers: {},
-          args: [ 123 ]
-        })
+        .request(
+          {
+            baseUrl: 'http://localhost',
+            endpoint: 'user/{0}',
+            method: 'GET',
+            headers: {},
+            args: [ 123 ]
+          },
+          ObserveOptions.Body)
         .subscribe(response => expect(response.id).toBe(123));
 
       const request = http.expectOne('http://localhost/user/123');
@@ -35,12 +38,13 @@ describe('RestClientService', () => {
     (service: RestClientService, http: HttpTestingController) => {
       service
         .request({
-          baseUrl: 'http://localhost',
-          endpoint: 'user/{0}',
-          method: 'POST',
-          headers: {},
-          args: [ 123, { name: 'xyz' } ]
-        })
+            baseUrl: 'http://localhost',
+            endpoint: 'user/{0}',
+            method: 'POST',
+            headers: {},
+            args: [ 123, { name: 'xyz' } ]
+          },
+          ObserveOptions.Body)
         .subscribe(response => expect(response.id).toBe(123));
 
       const request = http.expectOne((req) => req.url === 'http://localhost/user/123' && req.body.name === 'xyz');
