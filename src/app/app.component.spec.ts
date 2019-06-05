@@ -1,33 +1,40 @@
-import { TestBed, async } from '@angular/core/testing';
-import { AppComponent } from './app.component';
+import { async, TestBed } from '@angular/core/testing';
 
-/*
+import { AppComponent } from './app.component';
+import { TestClientService } from './services/test-client.service';
+import { Observable, of } from 'rxjs';
+
+class TestClientServiceMock {
+  find(id: number): Observable<any> {
+    return of({ id });
+  }
+
+  list(): Observable<any[]> {
+    return of([
+      { id: 1 },
+      { id: 2 }
+    ]);
+  }
+}
+
 describe('AppComponent', () => {
   beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
+    TestBed
+      .configureTestingModule({
+        declarations: [
+          AppComponent
+        ],
+        providers: [
+          { provide: TestClientService, useClass: TestClientServiceMock }
+        ]
+      })
+      .compileComponents()
+      .then();
   }));
 
-  it('should create the app', async(() => {
+  it('should create the app', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
-  }));
-
-  it(`should have as title 'app'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('app');
-  }));
-
-  it('should render title in a h1 tag', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to app!');
-  }));
+  });
 });
-*/
