@@ -11,5 +11,6 @@ export class AppComponent {
   constructor(private client: TestClientService) {
     client.find(123).subscribe(res => console.log(res));
     client.list().subscribe(res => console.log(res));
+    client.querySample({ abc: 'xyz', test: true }).subscribe(res => console.log(res));
   }
 }

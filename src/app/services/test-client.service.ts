@@ -13,6 +13,9 @@ export class TestClientService {
   @GET('/users.json')
   list: () => Observable<any>;
 
+  @GET('/users.json', { query: true })
+  querySample: (queryParams: any) => Observable<any>;
+
   @GET('/users/{0}', { observe: ObserveOptions.Response })
   find: (id: number) => Observable<any>;
 
