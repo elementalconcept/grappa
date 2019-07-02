@@ -71,6 +71,14 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
       headers: {}
     };
 
+    if (metd.options.hasOwnProperty('query')) {
+      const idx = typeof metd.options.query === 'number' ? metd.options.query : args.length - 1;
+
+      if (idx >= 0 && idx < args.length) {
+        request.params = args[ idx ];
+      }
+    }
+
     for (const filter of clsd.filtersBefore) {
       if (isAppliable(filter, property)) {
         filter.filterFunction.call(this, request);
