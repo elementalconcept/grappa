@@ -1,6 +1,6 @@
 # Grappa
 
-Decorator-powered REST client for Angular 5 and its HttpClient.
+Decorator-powered REST client for Angular 5+ and its HttpClient.
 
 ## Installation
 
@@ -14,6 +14,23 @@ With Yarn:
 
 ```Shell
 $ yarn add @elemental-concept/grappa
+```
+
+## Import the Module
+
+Then add `GrappaModule` to your project `NgModule`
+
+```javascript
+@NgModule({
+  declarations: [ AppComponent ],
+  imports: [
+    ...,
+    GrappaModule
+  ],
+  providers: [ ],
+  bootstrap: [ AppComponent ]
+})
+export class AppModule { }
 ```
 
 ## Introduction
