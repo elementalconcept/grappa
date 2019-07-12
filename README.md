@@ -16,8 +16,6 @@ With Yarn:
 $ yarn add @elemental-concept/grappa
 ```
 
-## Import the Module
-
 Then add `GrappaModule` to your project `NgModule`
 
 ```javascript
