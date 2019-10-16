@@ -16,6 +16,8 @@ With Yarn:
 $ yarn add @elemental-concept/grappa
 ```
 
+Add `GrappaModule` to your main `AppModule` to `imports` section.
+
 ## Introduction
 
 Grappa minimises boiler-plate code required for REST clients and streamlines request and response
