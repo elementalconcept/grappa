@@ -12,6 +12,6 @@ export class ClassDescriptor {
 
   restClient?: HttpRestClient<any>;
 
-  constructor(public uid: number, public proto: Object) {
+  constructor(public readonly uid: number, public readonly proto: Object) {
   }
 }
