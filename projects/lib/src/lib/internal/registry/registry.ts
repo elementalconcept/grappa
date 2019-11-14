@@ -3,7 +3,7 @@ import { instances } from '../instances/instances';
 
 import {
   ClassDescriptor,
-  FilterDescriptor,
+  FilterDescriptor, HttpRestClient,
   Initialisable,
   MethodDescriptor,
   ObserveOptions,
@@ -33,6 +33,10 @@ export class RegistryImpl {
     const clsd = this.getClassDescriptor(constructor.prototype);
     clsd.ctor = constructor;
     clsd.baseUrl = baseUrl;
+  }
+
+  registerAlternativeHttpClient<T>(proto: any, client: HttpRestClient<T>) {
+    this.getClassDescriptor(proto).restClient = client;
   }
 
   registerBeforeFilter(proto: any, method: Function, applyTo: OptionalList<string>) {

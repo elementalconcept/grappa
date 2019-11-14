@@ -1,5 +1,6 @@
 export * from './class-descriptor';
 export * from './filter-descriptor';
+export * from './http-rest-client';
 export * from './initialisable';
 export * from './method-descriptor';
 export * from './optional-list';

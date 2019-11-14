@@ -1,6 +1,7 @@
 import { UrlInput } from './url-input';
 import { MethodDescriptor } from './method-descriptor';
 import { FilterDescriptor } from './filter-descriptor';
+import { HttpRestClient } from './http-rest-client';
 
 export class ClassDescriptor {
   baseUrl: UrlInput;
@@ -8,6 +9,8 @@ export class ClassDescriptor {
   methods: { [ key: string ]: MethodDescriptor } = {};
   filtersBefore: FilterDescriptor[] = [];
   filtersAfter: FilterDescriptor[] = [];
+
+  restClient?: HttpRestClient<any>;
 
   constructor(public uid: number, public proto: Object) {
   }

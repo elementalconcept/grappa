@@ -5,5 +5,5 @@ export const instances: Instances = {
 };
 
 export interface Instances {
-  restClientInstance: RestClientService | null;
+  restClientInstance: RestClientService<any> | null;
 }
