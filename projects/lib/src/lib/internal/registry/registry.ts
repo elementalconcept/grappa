@@ -66,17 +66,17 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
       throw new ReferenceError(`REST function "${property}" is not defined for ${clsd.ctor.name}.`);
     }
 
-    const metd = clsd.methods[ property ];
+    const method = clsd.methods[ property ];
     const request: RestRequest = {
       baseUrl: clsd.baseUrl,
-      endpoint: metd.endpoint,
-      method: metd.method,
+      endpoint: method.endpoint,
+      method: method.method,
       args: args,
       headers: {}
     };
 
-    if (metd.options.hasOwnProperty('query')) {
-      const idx = typeof metd.options.query === 'number' ? metd.options.query : args.length - 1;
+    if (method.options.hasOwnProperty('query')) {
+      const idx = typeof method.options.query === 'number' ? method.options.query : args.length - 1;
 
       if (idx >= 0 && idx < args.length) {
         request.params = args[ idx ];
@@ -89,7 +89,7 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
       }
     }
 
-    let response = instances.restClientInstance.request(request, metd.options.observe);
+    let response = instances.restClientInstance.request(request, method.options.observe);
     for (const filter of clsd.filtersAfter) {
       if (isAppliable(filter, property)) {
         response = filter.filterFunction.call(this, response);
