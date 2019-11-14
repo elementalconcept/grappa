@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ObserveOptions, RestRequest } from '../../public';
-import { UrlParser } from '../url-parser/url-parser';
+import { UrlParser } from '../../public/url-parser/url-parser';
 import { HttpRestClient } from '../../public/models/http-rest-client';
 
 @Injectable({ providedIn: 'root' })
