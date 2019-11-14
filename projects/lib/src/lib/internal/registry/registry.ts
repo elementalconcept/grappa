@@ -89,7 +89,9 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
       }
     }
 
-    let response = instances.restClientInstance.request(request, method.options.observe);
+    const restClient = clsd.restClient instanceof Object ? clsd.restClient : instances.restClientInstance;
+    let response = restClient.request(request, method.options.observe, instances.restClientInstance);
+
     for (const filter of clsd.filtersAfter) {
       if (isAppliable(filter, property)) {
         response = filter.filterFunction.call(this, response);
