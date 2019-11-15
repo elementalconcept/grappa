@@ -39,6 +39,26 @@ export class RegistryImpl {
     this.getClassDescriptor(proto).restClient = client;
   }
 
+  putCustomMetadata(proto: any, method: string, customKey: string, data: any) {
+    const clsd = this.getClassDescriptor(proto);
+
+    if (!clsd.customMetadata.hasOwnProperty(method)) {
+      clsd.customMetadata[ method ] = {};
+    }
+
+    clsd.customMetadata[ method ][ customKey ] = data;
+  }
+
+  getCustomMetadata(proto: any, method: string, customKey: string) {
+    const clsd = this.getClassDescriptor(proto);
+
+    if (clsd.customMetadata.hasOwnProperty(method) && clsd.customMetadata[ method ].hasOwnProperty(customKey)) {
+      return clsd.customMetadata[ method ][ customKey ];
+    }
+
+    return null;
+  }
+
   registerBeforeFilter(proto: any, method: Function, applyTo: OptionalList<string>) {
     this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo: applyTo });
   }
