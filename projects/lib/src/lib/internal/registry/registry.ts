@@ -20,7 +20,7 @@ export class RegistryImpl {
 
   registerRequest(method: string, endpoint: string, proto: any, property: string, options: RequestOptions) {
     const clsd = this.getClassDescriptor(proto);
-    const metd = new MethodDescriptor();
+    const metd = new MethodDescriptor(property);
     metd.method = method;
     metd.endpoint = endpoint;
     metd.options = Object.assign({}, RegistryImpl.defaultRequestOptions, options);
@@ -54,6 +54,14 @@ export class RegistryImpl {
 
     if (clsd.customMetadata.hasOwnProperty(method) && clsd.customMetadata[ method ].hasOwnProperty(customKey)) {
       return clsd.customMetadata[ method ][ customKey ];
+    }
+
+    return null;
+  }
+
+  getCustomMetadataForDescriptor(clsd: ClassDescriptor, method: MethodDescriptor, customKey: string) {
+    if (clsd.customMetadata.hasOwnProperty(method.name) && clsd.customMetadata[ method.name ].hasOwnProperty(customKey)) {
+      return clsd.customMetadata[ method.name ][ customKey ];
     }
 
     return null;
