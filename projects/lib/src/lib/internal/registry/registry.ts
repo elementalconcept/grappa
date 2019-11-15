@@ -92,7 +92,9 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
       endpoint: method.endpoint,
       method: method.method,
       args: args,
-      headers: {}
+      headers: {},
+      classDescriptor: clsd,
+      methodDescriptor: method
     };
 
     if (method.options.hasOwnProperty('query')) {
