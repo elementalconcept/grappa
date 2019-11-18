@@ -14,7 +14,7 @@ describe('RestClientService', () => {
 
   it('should make GET request', inject(
     [ RestClientService, HttpTestingController ],
-    (service: RestClientService, http: HttpTestingController) => {
+    (service: RestClientService<any>, http: HttpTestingController) => {
       service
         .request(
           {
@@ -22,7 +22,9 @@ describe('RestClientService', () => {
             endpoint: 'user/{0}',
             method: 'GET',
             headers: {},
-            args: [ 123 ]
+            args: [ 123 ],
+            methodDescriptor: null,
+            classDescriptor: null
           },
           ObserveOptions.Body)
         .subscribe(response => expect(response.id).toBe(123));
@@ -35,14 +37,16 @@ describe('RestClientService', () => {
 
   it('should make POST request', inject(
     [ RestClientService, HttpTestingController ],
-    (service: RestClientService, http: HttpTestingController) => {
+    (service: RestClientService<any>, http: HttpTestingController) => {
       service
         .request({
             baseUrl: 'http://localhost',
             endpoint: 'user/{0}',
             method: 'POST',
             headers: {},
-            args: [ 123, { name: 'xyz' } ]
+            args: [ 123, { name: 'xyz' } ],
+            methodDescriptor: null,
+            classDescriptor: null
           },
           ObserveOptions.Body)
         .subscribe(response => expect(response.id).toBe(123));
