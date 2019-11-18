@@ -16,17 +16,17 @@ With Yarn:
 $ yarn add @elemental-concept/grappa
 ```
 
-Then add `GrappaModule` to your project `NgModule`
+Add `GrappaModule` to your main `AppModule` to imports section.
 
 ```javascript
 @NgModule({
-  declarations: [ AppComponent ],
+  declarations: [ ... ],
   imports: [
     ...,
     GrappaModule
   ],
   providers: [ ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [ ... ]
 })
 export class AppModule { }
 ```
