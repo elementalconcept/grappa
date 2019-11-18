@@ -5,16 +5,14 @@ import { TestClientService } from './services/test-client.service';
 import { Observable, of } from 'rxjs';
 
 class TestClientServiceMock {
-  find(id: number): Observable<any> {
-    return of({ id });
-  }
+  find = (id: number): Observable<any> => of({ id });
 
-  list(): Observable<any[]> {
-    return of([
-      { id: 1 },
-      { id: 2 }
-    ]);
-  }
+  list = (): Observable<any[]> => of([
+    { id: 1 },
+    { id: 2 }
+  ]);
+
+  querySample = (): Observable<any> => of(1);
 }
 
 describe('AppComponent', () => {
