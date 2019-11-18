@@ -86,6 +86,10 @@ export class RegistryImpl {
 
     return clsd;
   }
+
+  get defaultClient() {
+    return instances.restClientInstance;
+  }
 }
 
 function prepareRequest(clsd: ClassDescriptor, property: string) {
@@ -120,7 +124,7 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
     }
 
     const restClient = clsd.restClient instanceof Object ? clsd.restClient : instances.restClientInstance;
-    let response = restClient.request(request, method.options.observe, instances.restClientInstance);
+    let response = restClient.request(request, method.options.observe);
 
     for (const filter of clsd.filtersAfter) {
       if (isAppliable(filter, property)) {
