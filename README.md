@@ -1,6 +1,6 @@
 # Grappa
 
-Decorator-powered REST client for Angular 5+ and its HttpClient.
+Decorator-powered REST client for Angular 6+ and its HttpClient.
 
 ## Installation
 
