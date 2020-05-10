@@ -9,6 +9,22 @@ class TestClientServiceMock {
     return of({ id });
   }
 
+  create(user: any): Observable<any> {
+    return of(user);
+  }
+
+  update(id: number): Observable<any> {
+    return of({ id });
+  }
+
+  querySample(): Observable<any> {
+    return of({ id: 1 });
+  }
+
+  toggleFlag(id: 1): Observable<any> {
+    return of({ id });
+  }
+
   list(): Observable<any[]> {
     return of([
       { id: 1 },
