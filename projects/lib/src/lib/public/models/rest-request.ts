@@ -7,4 +7,5 @@ export interface RestRequest {
   headers: { [ header: string ]: string; };
   params?: { [ param: string ]: string; };
   args: any[];
+  noBody: boolean;
 }

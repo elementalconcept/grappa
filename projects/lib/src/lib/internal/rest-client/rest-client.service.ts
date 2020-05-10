@@ -12,11 +12,28 @@ export class RestClientService {
   }
 
   request(request: RestRequest, observe: ObserveOptions): Observable<any> {
-    const method = request.method.toUpperCase();
-    const body = (method === 'POST' || method === 'PUT') && request.args.length > 0 ? request.args[ request.args.length - 1 ] : undefined;
-    const baseUrl = typeof request.baseUrl === 'function' ? request.baseUrl() : request.baseUrl;
+    let body;
 
-    const result = this.http
+    const method = request.method.toUpperCase();
+
+    const baseUrl = typeof request.baseUrl === 'function'
+      ? request.baseUrl()
+      : request.baseUrl;
+
+    if (method === 'POST' || method === 'PUT') {
+      body = request.noBody
+        ? null
+        : request.args.length > 0
+          ? request.args[ request.args.length - 1 ]
+          : undefined;
+
+      request.headers = {
+        ...request.headers,
+        'Content-Length': '0'
+      };
+    }
+
+    return this.http
       .request(
         method,
         UrlParser.parse(baseUrl, request.endpoint, request.args),
@@ -29,8 +46,6 @@ export class RestClientService {
           reportProgress: false
         }
       );
-
-    return result;
   }
 }
 
