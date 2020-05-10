@@ -8,22 +8,25 @@ import { AfterRequest, BeforeRequest, GET, POST, PUT, RestClient } from '../../.
 import { ObserveOptions, RestRequest } from '../../../projects/lib/src/lib/public/models';
 
 @Injectable({ providedIn: 'root' })
-@RestClient('http://localhost:4200/assets')
+@RestClient('http://localhost:8081')
 export class TestClientService {
-  @GET('/users.json')
+  @GET('/user')
   list: () => Observable<any>;
 
-  @GET('/users.json', { query: true })
+  @GET('/user/query', { query: true })
   querySample: (queryParams: any) => Observable<any>;
 
-  @GET('/users/{0}', { observe: ObserveOptions.Response })
+  @GET('/user/{0}', { observe: ObserveOptions.Response })
   find: (id: number) => Observable<any>;
 
-  @POST('/users')
+  @POST('/user')
   create: (user: any) => Observable<any>;
 
-  @PUT('/users/{0}')
+  @PUT('/user/{0}')
   update: (id: number, user: any) => Observable<any>;
+
+  @PUT('/user/{0}/toggle', { noBody: true })
+  toggleFlag: (id: number) => Observable<any>;
 
   @BeforeRequest('find')
   beforeFilter(request: RestRequest) {
