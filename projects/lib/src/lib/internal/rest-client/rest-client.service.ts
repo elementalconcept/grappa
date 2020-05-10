@@ -26,11 +26,6 @@ export class RestClientService {
         : request.args.length > 0
           ? request.args[ request.args.length - 1 ]
           : undefined;
-
-      request.headers = {
-        ...request.headers,
-        'Content-Length': '0'
-      };
     }
 
     return this.http
