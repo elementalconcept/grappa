@@ -43,7 +43,8 @@ describe('RestClientService', () => {
             endpoint: 'user/{0}',
             method: 'POST',
             headers: {},
-            args: [ 123, { name: 'xyz' } ]
+            args: [ 123, { name: 'xyz' } ],
+            noBody: false
           },
           ObserveOptions.Body)
         .subscribe(response => expect(response.id).toBe(123));
