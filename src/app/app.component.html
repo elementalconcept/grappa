@@ -12,7 +12,7 @@
 <h5>{{ "@POST('/user')" }}</h5>
 <pre>{{ createResponse | json }}</pre>
 
-<h5>{{ "@PUT('/user/{0}/toggle', { skipBody: true })" }}</h5>
+<h5>{{ "@PUT('/user/{0}/toggle', { emptyBody: true })" }}</h5>
 <pre>{{ toggleFlagResponse | json }}</pre>
 
 <h5>{{ "@PUT('/user/{0}')" }}</h5>

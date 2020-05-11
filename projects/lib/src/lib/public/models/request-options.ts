@@ -1,7 +1,7 @@
 export interface RequestOptions {
   observe?: ObserveOptions;
   query?: number | boolean;
-  skipBody?: boolean;
+  emptyBody?: boolean;
 }
 
 export enum ObserveOptions {

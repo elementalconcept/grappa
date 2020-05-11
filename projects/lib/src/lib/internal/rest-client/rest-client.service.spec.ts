@@ -23,7 +23,7 @@ describe('RestClientService', () => {
             method: 'GET',
             headers: {},
             args: [ 123 ],
-            skipBody: false,
+            emptyBody: false,
             methodDescriptor: null,
             classDescriptor: null
           },
@@ -46,7 +46,7 @@ describe('RestClientService', () => {
             method: 'POST',
             headers: {},
             args: [ 123, { name: 'xyz' } ],
-            skipBody: false,
+            emptyBody: false,
             methodDescriptor: null,
             classDescriptor: null
           },

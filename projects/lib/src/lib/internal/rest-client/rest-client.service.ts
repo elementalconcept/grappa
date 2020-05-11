@@ -38,7 +38,7 @@ export class RestClientService<T> implements HttpRestClient<T> {
 
   private getBody(request: RestRequest, method: string): any {
     if (method === 'POST' || method === 'PUT') {
-      return request.skipBody
+      return request.emptyBody
         ? null
         : request.args.length > 0
           ? request.args[ request.args.length - 1 ]

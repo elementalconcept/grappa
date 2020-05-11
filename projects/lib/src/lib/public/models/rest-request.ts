@@ -9,7 +9,7 @@ export interface RestRequest {
   headers: { [ header: string ]: string; };
   params?: { [ param: string ]: string; };
   args: any[];
-  skipBody: boolean;
+  emptyBody: boolean;
   classDescriptor: ClassDescriptor;
   methodDescriptor: MethodDescriptor;
 }

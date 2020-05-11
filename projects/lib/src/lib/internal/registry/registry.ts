@@ -106,7 +106,7 @@ function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
       method: method.method,
       args: args,
       headers: {},
-      skipBody: false,
+      emptyBody: false,
       classDescriptor,
       methodDescriptor: method
     };
@@ -119,8 +119,8 @@ function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
       }
     }
 
-    if (method.options.hasOwnProperty('skipBody')) {
-      request.skipBody = true;
+    if (method.options.hasOwnProperty('emptyBody')) {
+      request.emptyBody = true;
     }
 
     for (const filter of classDescriptor.filtersBefore) {
