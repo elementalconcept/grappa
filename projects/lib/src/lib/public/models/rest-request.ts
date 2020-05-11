@@ -1,4 +1,6 @@
 import { UrlInput } from './url-input';
+import { ClassDescriptor } from './class-descriptor';
+import { MethodDescriptor } from './method-descriptor';
 
 export interface RestRequest {
   baseUrl: UrlInput;
@@ -8,4 +10,6 @@ export interface RestRequest {
   params?: { [ param: string ]: string; };
   args: any[];
   skipBody: boolean;
+  classDescriptor: ClassDescriptor;
+  methodDescriptor: MethodDescriptor;
 }

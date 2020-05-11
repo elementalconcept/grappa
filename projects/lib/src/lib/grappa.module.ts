@@ -11,7 +11,7 @@ import { instances } from './internal/instances/instances';
   exports: []
 })
 export class GrappaModule {
-  constructor(restClient: RestClientService) {
+  constructor(restClient: RestClientService<any>) {
     instances.restClientInstance = restClient;
   }
 }

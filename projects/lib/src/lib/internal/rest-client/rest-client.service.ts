@@ -4,14 +4,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ObserveOptions, RestRequest } from '../../public';
-import { UrlParser } from '../url-parser/url-parser';
+import { UrlParser } from '../../public/url-parser/url-parser';
+import { HttpRestClient } from '../../public/models/http-rest-client';
 
 @Injectable({ providedIn: 'root' })
-export class RestClientService {
+export class RestClientService<T> implements HttpRestClient<T> {
   constructor(private http: HttpClient) {
   }
 
-  request(request: RestRequest, observe: ObserveOptions): Observable<any> {
+  request(request: RestRequest, observe: ObserveOptions): Observable<T> {
     const method = request.method.toUpperCase();
     const baseUrl = this.getBaseUrl(request);
     const body = this.getBody(request, method);

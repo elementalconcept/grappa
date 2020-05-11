@@ -4,6 +4,7 @@ import { instances } from '../instances/instances';
 import {
   ClassDescriptor,
   FilterDescriptor,
+  HttpRestClient,
   Initialisable,
   MethodDescriptor,
   ObserveOptions,
@@ -20,7 +21,7 @@ export class RegistryImpl {
 
   registerRequest(method: string, endpoint: string, proto: any, property: string, options: RequestOptions) {
     const classDescriptor = this.getClassDescriptor(proto);
-    const methodDescriptor = new MethodDescriptor();
+    const methodDescriptor = new MethodDescriptor(property);
     methodDescriptor.method = method;
     methodDescriptor.endpoint = endpoint;
     methodDescriptor.options = Object.assign({}, RegistryImpl.defaultRequestOptions, options);
@@ -33,6 +34,38 @@ export class RegistryImpl {
     const classDescriptor = this.getClassDescriptor(constructor.prototype);
     classDescriptor.ctor = constructor;
     classDescriptor.baseUrl = baseUrl;
+  }
+
+  registerAlternativeHttpClient<T>(proto: any, client: HttpRestClient<T>) {
+    this.getClassDescriptor(proto).restClient = client;
+  }
+
+  putCustomMetadata(proto: any, method: string, customKey: string, data: any) {
+    const clsd = this.getClassDescriptor(proto);
+
+    if (!clsd.customMetadata.hasOwnProperty(method)) {
+      clsd.customMetadata[ method ] = {};
+    }
+
+    clsd.customMetadata[ method ][ customKey ] = data;
+  }
+
+  getCustomMetadata(proto: any, method: string, customKey: string) {
+    const clsd = this.getClassDescriptor(proto);
+
+    if (clsd.customMetadata.hasOwnProperty(method) && clsd.customMetadata[ method ].hasOwnProperty(customKey)) {
+      return clsd.customMetadata[ method ][ customKey ];
+    }
+
+    return null;
+  }
+
+  getCustomMetadataForDescriptor(clsd: ClassDescriptor, method: MethodDescriptor, customKey: string) {
+    if (clsd.customMetadata.hasOwnProperty(method.name) && clsd.customMetadata[ method.name ].hasOwnProperty(customKey)) {
+      return clsd.customMetadata[ method.name ][ customKey ];
+    }
+
+    return null;
   }
 
   registerBeforeFilter(proto: any, method: Function, applyTo: OptionalList<string>) {
@@ -54,6 +87,10 @@ export class RegistryImpl {
 
     return classDescriptor;
   }
+
+  get defaultClient() {
+    return instances.restClientInstance;
+  }
 }
 
 function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
@@ -69,7 +106,9 @@ function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
       method: method.method,
       args: args,
       headers: {},
-      skipBody: false
+      skipBody: false,
+      classDescriptor,
+      methodDescriptor: method
     };
 
     if (method.options.hasOwnProperty('query')) {
@@ -90,7 +129,12 @@ function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
       }
     }
 
-    let response = instances.restClientInstance.request(request, method.options.observe);
+    const restClient = classDescriptor.restClient instanceof Object
+      ? classDescriptor.restClient
+      : instances.restClientInstance;
+
+    let response = restClient.request(request, method.options.observe);
+
     for (const filter of classDescriptor.filtersAfter) {
       if (isApplicable(filter, property)) {
         response = filter.filterFunction.call(this, response);
