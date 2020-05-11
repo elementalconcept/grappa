@@ -69,7 +69,7 @@ function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
       method: method.method,
       args: args,
       headers: {},
-      noBody: false
+      skipBody: false
     };
 
     if (method.options.hasOwnProperty('query')) {
@@ -80,8 +80,8 @@ function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
       }
     }
 
-    if (method.options.hasOwnProperty('noBody')) {
-      request.noBody = true;
+    if (method.options.hasOwnProperty('skipBody')) {
+      request.skipBody = true;
     }
 
     for (const filter of classDescriptor.filtersBefore) {

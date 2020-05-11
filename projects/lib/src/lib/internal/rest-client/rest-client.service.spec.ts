@@ -23,7 +23,7 @@ describe('RestClientService', () => {
             method: 'GET',
             headers: {},
             args: [ 123 ],
-            noBody: false
+            skipBody: false
           },
           ObserveOptions.Body)
         .subscribe(response => expect(response.id).toBe(123));
@@ -44,7 +44,7 @@ describe('RestClientService', () => {
             method: 'POST',
             headers: {},
             args: [ 123, { name: 'xyz' } ],
-            noBody: false
+            skipBody: false
           },
           ObserveOptions.Body)
         .subscribe(response => expect(response.id).toBe(123));

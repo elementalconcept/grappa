@@ -25,7 +25,7 @@ export class TestClientService {
   @PUT('/user/{0}')
   update: (id: number, user: any) => Observable<any>;
 
-  @PUT('/user/{0}/toggle', { noBody: true })
+  @PUT('/user/{0}/toggle', { skipBody: true })
   toggleFlag: (id: number) => Observable<any>;
 
   @BeforeRequest('find')

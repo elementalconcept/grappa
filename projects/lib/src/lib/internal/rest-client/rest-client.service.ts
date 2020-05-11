@@ -21,7 +21,7 @@ export class RestClientService {
       : request.baseUrl;
 
     if (method === 'POST' || method === 'PUT') {
-      body = request.noBody
+      body = request.skipBody
         ? null
         : request.args.length > 0
           ? request.args[ request.args.length - 1 ]
