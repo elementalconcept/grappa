@@ -1,18 +1,17 @@
 import { async, TestBed } from '@angular/core/testing';
 
+import { Observable, of } from 'rxjs';
+
 import { AppComponent } from './app.component';
 import { TestClientService } from './services/test-client.service';
-import { Observable, of } from 'rxjs';
 
 class TestClientServiceMock {
   find = (id: number): Observable<any> => of({ id });
-
-  list = (): Observable<any[]> => of([
-    { id: 1 },
-    { id: 2 }
-  ]);
-
-  querySample = (): Observable<any> => of(1);
+  create = (user: any): Observable<any> => of(user);
+  update = (id: number): Observable<any> => of({ id });
+  querySample = (): Observable<any> => of({ id: 1 });
+  toggleFlag = (id: 1): Observable<any> => of({ id });
+  list = (): Observable<any[]> => of([ { id: 1 }, { id: 2 } ]);
 }
 
 describe('AppComponent', () => {

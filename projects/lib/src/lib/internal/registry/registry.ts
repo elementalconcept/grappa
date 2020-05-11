@@ -3,7 +3,8 @@ import { instances } from '../instances/instances';
 
 import {
   ClassDescriptor,
-  FilterDescriptor, HttpRestClient,
+  FilterDescriptor,
+  HttpRestClient,
   Initialisable,
   MethodDescriptor,
   ObserveOptions,
@@ -19,20 +20,20 @@ export class RegistryImpl {
   private classes: { [ key: string ]: ClassDescriptor } = {};
 
   registerRequest(method: string, endpoint: string, proto: any, property: string, options: RequestOptions) {
-    const clsd = this.getClassDescriptor(proto);
-    const metd = new MethodDescriptor(property);
-    metd.method = method;
-    metd.endpoint = endpoint;
-    metd.options = Object.assign({}, RegistryImpl.defaultRequestOptions, options);
-    clsd.methods[ property ] = metd;
+    const classDescriptor = this.getClassDescriptor(proto);
+    const methodDescriptor = new MethodDescriptor(property);
+    methodDescriptor.method = method;
+    methodDescriptor.endpoint = endpoint;
+    methodDescriptor.options = Object.assign({}, RegistryImpl.defaultRequestOptions, options);
+    classDescriptor.methods[ property ] = methodDescriptor;
 
-    proto[ property ] = prepareRequest(clsd, property);
+    proto[ property ] = prepareRequest(classDescriptor, property);
   }
 
   registerClass(baseUrl: UrlInput, constructor: Initialisable) {
-    const clsd = this.getClassDescriptor(constructor.prototype);
-    clsd.ctor = constructor;
-    clsd.baseUrl = baseUrl;
+    const classDescriptor = this.getClassDescriptor(constructor.prototype);
+    classDescriptor.ctor = constructor;
+    classDescriptor.baseUrl = baseUrl;
   }
 
   registerAlternativeHttpClient<T>(proto: any, client: HttpRestClient<T>) {
@@ -77,14 +78,14 @@ export class RegistryImpl {
 
   getClassDescriptor(proto: any): ClassDescriptor {
     const uid = UID(proto);
-    let clsd = this.classes[ uid ];
+    let classDescriptor = this.classes[ uid ];
 
-    if (clsd === undefined) {
-      clsd = new ClassDescriptor(uid, proto);
-      this.classes[ uid ] = clsd;
+    if (classDescriptor === undefined) {
+      classDescriptor = new ClassDescriptor(uid, proto);
+      this.classes[ uid ] = classDescriptor;
     }
 
-    return clsd;
+    return classDescriptor;
   }
 
   get defaultClient() {
@@ -92,20 +93,21 @@ export class RegistryImpl {
   }
 }
 
-function prepareRequest(clsd: ClassDescriptor, property: string) {
+function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
   return function (...args: any[]) {
-    if (!clsd.methods.hasOwnProperty(property)) {
-      throw new ReferenceError(`REST function "${property}" is not defined for ${clsd.ctor.name}.`);
+    if (!classDescriptor.methods.hasOwnProperty(property)) {
+      throw new ReferenceError(`REST function "${property}" is not defined for ${classDescriptor.ctor.name}.`);
     }
 
-    const method = clsd.methods[ property ];
+    const method = classDescriptor.methods[ property ];
     const request: RestRequest = {
-      baseUrl: clsd.baseUrl,
+      baseUrl: classDescriptor.baseUrl,
       endpoint: method.endpoint,
       method: method.method,
       args: args,
       headers: {},
-      classDescriptor: clsd,
+      emptyBody: false,
+      classDescriptor,
       methodDescriptor: method
     };
 
@@ -117,17 +119,24 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
       }
     }
 
-    for (const filter of clsd.filtersBefore) {
-      if (isAppliable(filter, property)) {
+    if (method.options.hasOwnProperty('emptyBody')) {
+      request.emptyBody = true;
+    }
+
+    for (const filter of classDescriptor.filtersBefore) {
+      if (isApplicable(filter, property)) {
         filter.filterFunction.call(this, request);
       }
     }
 
-    const restClient = clsd.restClient instanceof Object ? clsd.restClient : instances.restClientInstance;
+    const restClient = classDescriptor.restClient instanceof Object
+      ? classDescriptor.restClient
+      : instances.restClientInstance;
+
     let response = restClient.request(request, method.options.observe);
 
-    for (const filter of clsd.filtersAfter) {
-      if (isAppliable(filter, property)) {
+    for (const filter of classDescriptor.filtersAfter) {
+      if (isApplicable(filter, property)) {
         response = filter.filterFunction.call(this, response);
       }
     }
@@ -136,7 +145,7 @@ function prepareRequest(clsd: ClassDescriptor, property: string) {
   };
 }
 
-function isAppliable(filter: FilterDescriptor, property: string) {
+function isApplicable(filter: FilterDescriptor, property: string) {
   if (filter.applyTo === null) {
     return true;
   }

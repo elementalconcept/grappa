@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "star-mock-server": "mockserver -p 8081 -m mockserver",
+    "start": "ng serve --port=4201",
+    "start-all": "npm run star-mock-server & npm run start",
     "build": "ng build lib --prod",
     "publish": "npm publish dist/lib",
     "test": "ng test --watch=false",
@@ -42,6 +44,7 @@
     "karma-coverage-istanbul-reporter": "~2.1.1",
     "karma-jasmine": "~3.1.1",
     "karma-jasmine-html-reporter": "^1.5.2",
+    "mockserver": "^3.1.1",
     "ng-packagr": "^9.0.1",
     "protractor": "~5.4.3",
     "ts-node": "~8.6.2",

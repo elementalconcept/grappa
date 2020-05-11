@@ -1,1 +1,20 @@
-<div></div>
+<h1>Test Result</h1>
+
+<h5>{{ "@GET('/user')" }}</h5>
+<pre>{{ listResponse | json }}</pre>
+
+<h5>{{ "@GET('/user/query', { query: true })" }}</h5>
+<pre>{{ querySampleResponse | json }}</pre>
+
+<h5>{{ "@GET('/user/{0}', { observe: ObserveOptions.Response })" }}</h5>
+<pre>{{ findResponse | json }}</pre>
+
+<h5>{{ "@POST('/user')" }}</h5>
+<pre>{{ createResponse | json }}</pre>
+
+<h5>{{ "@PUT('/user/{0}/toggle', { emptyBody: true })" }}</h5>
+<pre>{{ toggleFlagResponse | json }}</pre>
+
+<h5>{{ "@PUT('/user/{0}')" }}</h5>
+<pre>{{ updateResponse | json }}</pre>
+

@@ -14,8 +14,8 @@ export class RestClientService<T> implements HttpRestClient<T> {
 
   request(request: RestRequest, observe: ObserveOptions): Observable<T> {
     const method = request.method.toUpperCase();
-    const body = (method === 'POST' || method === 'PUT') && request.args.length > 0 ? request.args[ request.args.length - 1 ] : undefined;
-    const baseUrl = typeof request.baseUrl === 'function' ? request.baseUrl() : request.baseUrl;
+    const baseUrl = this.getBaseUrl(request);
+    const body = this.getBody(request, method);
 
     return this.http
       .request(
@@ -28,7 +28,24 @@ export class RestClientService<T> implements HttpRestClient<T> {
           observe: observe,
           responseType: 'json',
           reportProgress: false
-        });
+        }
+      );
+  }
+
+  private getBaseUrl(request: RestRequest): string {
+    return typeof request.baseUrl === 'function' ? request.baseUrl() : request.baseUrl;
+  }
+
+  private getBody(request: RestRequest, method: string): any {
+    if (method === 'POST' || method === 'PUT') {
+      return request.emptyBody
+        ? null
+        : request.args.length > 0
+          ? request.args[ request.args.length - 1 ]
+          : undefined;
+    }
+
+    return null;
   }
 }
 
