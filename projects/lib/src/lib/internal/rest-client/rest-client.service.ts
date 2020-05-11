@@ -12,21 +12,9 @@ export class RestClientService {
   }
 
   request(request: RestRequest, observe: ObserveOptions): Observable<any> {
-    let body;
-
     const method = request.method.toUpperCase();
-
-    const baseUrl = typeof request.baseUrl === 'function'
-      ? request.baseUrl()
-      : request.baseUrl;
-
-    if (method === 'POST' || method === 'PUT') {
-      body = request.skipBody
-        ? null
-        : request.args.length > 0
-          ? request.args[ request.args.length - 1 ]
-          : undefined;
-    }
+    const baseUrl = this.getBaseUrl(request);
+    const body = this.getBody(request, method);
 
     return this.http
       .request(
@@ -41,6 +29,22 @@ export class RestClientService {
           reportProgress: false
         }
       );
+  }
+
+  private getBaseUrl(request: RestRequest): string {
+    return typeof request.baseUrl === 'function' ? request.baseUrl() : request.baseUrl;
+  }
+
+  private getBody(request: RestRequest, method: string): any {
+    if (method === 'POST' || method === 'PUT') {
+      return request.skipBody
+        ? null
+        : request.args.length > 0
+          ? request.args[ request.args.length - 1 ]
+          : undefined;
+    }
+
+    return null;
   }
 }
 
