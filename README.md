@@ -2,6 +2,11 @@
 
 Decorator-powered REST client for Angular 9 and its HttpClient. For previous versions of Angular use Grappa v0.6.0.
 
+## Versions
+
+- `0.7.0` Angular >= 9 < 10
+- `0.8.0` Angular >= 10 < 11
+
 ## Installation
 
 With npm:
