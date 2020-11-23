@@ -2,7 +2,7 @@
 
 Decorator-powered REST client for Angular 9-11 and its HttpClient. 
 
-For previous versions of Angular use Grappa `v0.6.0`.
+For previous versions of Angular use **Grappa** `v0.6.0`.
 
 ## Installation
 
@@ -56,7 +56,7 @@ export class UserService {
 }
 ```
 
-Grappa will auto-generate required class methods which can be easily called from any component:
+**Grappa** will auto-generate required class methods which can be easily called from any component:
 
 ```typescript
 @Component({
@@ -233,7 +233,7 @@ afterFilter(response: Observable<HttpResponse<any>>) {
 
 ### RequestOptions
 
-Configuration for specific GET, POST, PUT and DELETE requests.
+Configuration for specific *GET*, *POST*, *PUT* and *DELETE* requests.
 
 ```typescript
 export interface RequestOptions {
@@ -255,7 +255,7 @@ Given
 getUserPosts: (userId: number, page: number) => Observable<Post[]>;
 ```
 
-you'll have `{1}` as the `page` attribute. But if instead you have multiple query params, 
+you'll have `{1}` as the `page` attribute, but if instead you have multiple query params, 
 the best approach is to have a single object and then use the `query` option:
 
 ```typescript
@@ -263,14 +263,14 @@ the best approach is to have a single object and then use the `query` option:
 getUserPosts: (userId: number, { page: number, search: string, sort: string, hideOutOfStock: boolean }) => Observable<Post[]>;
 ```
 
-This way the libray will translate the object into a list of query params, like this:
+This way **Grappa** will translate the object into a list of query params, like this:
 
 ```typescript
 `/users/{0}/posts?page=${page}&search=${search}&sort=${sort}&hideOutOfStock=${hideOutOfStock}`
 ```
 
 If for any reason you need to send a `PUT` or a `POST` without a body (which is not a good practise), 
-we added a new flag `emptyBody`, that allow that. so you could send something like this:
+we added a new flag `emptyBody`, that allow that. So you could send something like this:
 
 ```typescript
 @PUT('/users/{0}', { emptyBody: true })
