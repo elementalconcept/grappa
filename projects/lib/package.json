@@ -13,7 +13,8 @@
     "url": "https://github.com/elementalconcept/grappa/issues"
   },
   "dependencies": {
-    "tslib": "^2.0.0"
+    "tslib": "^2.0.0",
+    "webpack-subresource-integrity": ">=1.5.1"
   },
   "peerDependencies": {
     "@angular/common": ">= 9 < 11",
