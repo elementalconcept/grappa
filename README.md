@@ -1,6 +1,8 @@
 # Grappa
 
-Decorator-powered REST client for Angular 9/10 and its HttpClient. For previous versions of Angular use Grappa v0.6.0.
+Decorator-powered REST client for Angular 9-11 and its HttpClient. 
+
+For previous versions of Angular use Grappa `v0.6.0`.
 
 ## Installation
 
@@ -18,7 +20,7 @@ $ yarn add @elemental-concept/grappa
 
 Add `GrappaModule` to your main `AppModule` to imports section.
 
-```javascript
+```typescript
 @NgModule({
   declarations: [ ... ],
   imports: [
@@ -33,10 +35,10 @@ export class AppModule { }
 
 ## Introduction
 
-Grappa minimises boiler-plate code required for REST clients and streamlines request and response
+**Grappa** minimises boiler-plate code required for REST clients and streamlines request and response
 modifications with filters. Simply define a list of methods which reflect REST API:
 
-```javascript
+```typescript
 @Injectable()
 @RestClient('http://example.com/api/')
 export class UserService {
@@ -56,7 +58,7 @@ export class UserService {
 
 Grappa will auto-generate required class methods which can be easily called from any component:
 
-```javascript
+```typescript
 @Component({
   // ...
 })
@@ -68,9 +70,12 @@ export class AppComponent {
 ```
 
 Define `@BeforeRequest()` filter methods to uniformly modify data being sent to the API.
-JWT injection is a good example: 
+A good example could be JWT injection, but we are covering that with a separate library 
+[Grappa JWT](https://github.com/elementalconcept/grappa-jwt)
 
-```javascript
+Custom header injection is a good example:
+
+```typescript
 @Injectable()
 @RestClient('http://example.com/api/')
 export class UserService {
@@ -79,15 +84,20 @@ export class UserService {
   constructor(private authService: AuthService) {}
 
   @BeforeRequest()
-  jwtFilter(request: RestRequest) {
-    request.headers[ 'Authorization' ] = this.authService.getJWT();
+  private customHeaders(request: RestRequest) {
+    request.headers = {
+      ...request.headers,
+      'X-Xid': id,
+      'X-Client-Id': clientId,
+      'X-User-Id': userId,
+    };
   }
 }
 ```
 
 Use `@AfterRequest()` to transform responses and inject global error handlers:
 
-```javascript
+```typescript
 @Injectable()
 @RestClient('http://example.com/api/')
 export class UserService {
@@ -95,7 +105,7 @@ export class UserService {
 
   @AfterRequest()
   tranformResponse(response: Observable<HttpResponse<any>>) {
-    return response.map(r => User.fromResponse(r.body));
+    return response.map(item => User.fromResponse(item.body));
   }
 
   @AfterRequest()
@@ -107,6 +117,8 @@ export class UserService {
   }
 }
 ```
+
+---
 
 ## API
 
@@ -120,7 +132,7 @@ then it is assumed that property decorators will contain full URLs.
 
 Example with `@RestClient`:
 
-```javascript
+```typescript
 @Injectable()
 @RestClient('http://example.com/api/')
 export class UserService {
@@ -131,7 +143,7 @@ export class UserService {
 
 Example without `@RestClient`:
 
-```javascript
+```typescript
 @Injectable()
 export class UserService {
   @GET('http://somedomain.org/users')
@@ -139,17 +151,21 @@ export class UserService {
 }
 ```
 
+---
+
 ### `@GET(endpoint: string, options: RequestOptions = {})`
 
 Makes HTTP GET request to the specified end-point. Arguments passed to the decorated function can be
 inserted into end-point URL using index based templates. Indices start at 0. Example:
 
-```javascript
+```typescript
 @GET('/users/{0}/posts?page={1}')
 getUserPosts: (userId: number, page: number) => Observable<Post[]>;
 ```
 
 `{0}` will be replaced with `userId` value and `{1}` will be replaced with `page` value.
+
+---
 
 ### `@POST(endpoint: string, options: RequestOptions = {})`
 
@@ -157,10 +173,12 @@ Makes HTTP POST request to the specified end-point. Arguments passed to the deco
 inserted into end-point URL using index based templates. Indices start at 0. Last function argument will be used
 as a POST body. 
 
-```javascript
+```typescript
 @POST('/users')
 create: (user: User) => Observable<User>;
 ```
+
+---
 
 ### `@PUT(endpoint: string, options: RequestOptions = {})`
 
@@ -168,50 +186,60 @@ Makes HTTP PUT request to the specified end-point. Arguments passed to the decor
 inserted into end-point URL using index based templates. Indices start at 0. Last function argument will be used
 as a PUT body. 
 
-```javascript
+```typescript
 @PUT('/users/{0}', options: RequestOptions = {})
 update: (userId: number. user: User) => Observable<User>;
 ```
+
+---
 
 ### `@DELETE(endpoint: string, options: RequestOptions = {})`
 
 Makes HTTP DELETE request to the specified end-point. Arguments passed to the decorated function can be
 inserted into end-point URL using index based templates. Indices start at 0. Example:
 
-```javascript
+```typescript
 @DELETE('/users/{0}')
 remove: (userId: number) => Observable<User>;
 ```
+
+---
 
 ### `@BeforeRequest(applyTo: OptionalList<string> = null)`
 
 Runs decorated method before every request in a class.
 
-```javascript
+```typescript
 @BeforeRequest()
 beforeFilter(request: RestRequest) {
   request.headers[ 'X-Dummy' ] = 'Abcde';
 }
 ```
 
+---
+
 ### `@AfterRequest(applyTo: OptionalList<string> = null)`
 
 Runs decorated method after every request in a class.
 
-```javascript
+```typescript
 @AfterRequest()
 afterFilter(response: Observable<HttpResponse<any>>) {
   return response.map(r => r.body.value);
 }
 ```
 
+---
+
 ### RequestOptions
 
 Configuration for specific GET, POST, PUT and DELETE requests.
 
-```javascript
+```typescript
 export interface RequestOptions {
   observe?: ObserveOptions;
+  query?: number | boolean;
+  emptyBody?: boolean;
 }
 
 export enum ObserveOptions {
@@ -220,17 +248,48 @@ export enum ObserveOptions {
 }
 ```
 
+Given
+
+```typescript
+@GET('/users/{0}/posts?page={1}')
+getUserPosts: (userId: number, page: number) => Observable<Post[]>;
+```
+
+you'll have `{1}` as the `page` attribute. But if instead you have multiple query params, 
+the best approach is to have a single object and then use the `query` option:
+
+```typescript
+@GET('/users/{0}/posts', { query: true })
+getUserPosts: (userId: number, { page: number, search: string, sort: string, hideOutOfStock: boolean }) => Observable<Post[]>;
+```
+
+This way the libray will translate the object into a list of query params, like this:
+
+```typescript
+`/users/{0}/posts?page=${page}&search=${search}&sort=${sort}&hideOutOfStock=${hideOutOfStock}`
+```
+
+If for any reason you need to send a `PUT` or a `POST` without a body (which is not a good practise), 
+we added a new flag `emptyBody`, that allow that. so you could send something like this:
+
+```typescript
+@PUT('/users/{0}', { emptyBody: true })
+getUserPosts: (userId) => Observable<Post[]>;
+```
+
+---
+
 ### OptionalList<string>
 
 Allows to specify the names of request methods specific filter should apply.
 
-```javascript
+```typescript
 export type OptionalList<T> = T | T[] | null;
 ```
 
 Usage:
 
-```javascript
+```typescript
 @GET('/users')
 get: () => Observable<User[]>;
 
