@@ -48,6 +48,9 @@ export class UserService {
   @GET('/users/{0}')
   find: (id: number) => Observable<User>;
 
+  @PATCH('/users/{0}')
+  update: (id: number, user: User) => Observable<User>;
+
   @POST('/users')
   create: (user: User) => Observable<User>;
 
@@ -167,6 +170,18 @@ getUserPosts: (userId: number, page: number) => Observable<Post[]>;
 
 ---
 
+### `@PATCH(endpoint: string, options: RequestOptions = {})`
+
+Makes HTTP PATCH request to the specified end-point. Arguments passed to the decorated function can be
+inserted into end-point URL using index based templates. Indices start at 0. Last function argument will be used
+as a PATCH body.
+
+```typescript
+@PATCH('/users/{0}', options: RequestOptions = {})
+update: (userId: number. user: User) => Observable<User>;
+```
+---
+
 ### `@POST(endpoint: string, options: RequestOptions = {})`
 
 Makes HTTP POST request to the specified end-point. Arguments passed to the decorated function can be
@@ -233,7 +248,7 @@ afterFilter(response: Observable<HttpResponse<any>>) {
 
 ### RequestOptions
 
-Configuration for specific *GET*, *POST*, *PUT* and *DELETE* requests.
+Configuration for specific *GET*, *POST*, *PATCH*, *PUT* and *DELETE* requests.
 
 ```typescript
 export interface RequestOptions {
