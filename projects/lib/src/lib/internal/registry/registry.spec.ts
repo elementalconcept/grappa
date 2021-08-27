@@ -1,4 +1,4 @@
-import { DELETE, GET, POST, RestClient } from '../../public/decorators';
+import { DELETE, GET, PATCH, POST, PUT, RestClient } from '../../public/decorators';
 import { Registry } from './registry';
 import { UID } from '../uid/uid';
 
@@ -7,10 +7,13 @@ class TestClient {
   @GET('/users/{0}')
   findUser: (id: number) => any;
 
+  @PATCH('/users/{0}')
+  patchUser: (id: number, user: any) => any;
+
   @POST('/users')
   createUser: (user: any) => any;
 
-  @POST('/users/{0}')
+  @PUT('/users/{0}')
   updateUser: (id: number, user: any) => any;
 
   @DELETE('/users/{0}')

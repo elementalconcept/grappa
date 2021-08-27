@@ -37,7 +37,7 @@ export class RestClientService<T> implements HttpRestClient<T> {
   }
 
   private getBody(request: RestRequest, method: string): any {
-    if (method === 'POST' || method === 'PUT') {
+    if (method === 'PATCH' || method === 'POST' || method === 'PUT') {
       return request.emptyBody
         ? null
         : request.args.length > 0
