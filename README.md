@@ -1,8 +1,8 @@
 # Grappa
 
-Decorator-powered REST client for Angular 9+ and its HttpClient, plus RxJs 6+.
+Decorator-powered REST client for Angular 12 and its HttpClient, plus RxJs 6+.
 
-For previous versions of Angular use **Grappa** `v0.6.0`.
+For previous versions of Angular use **Grappa** `v0.8.3`.
 
 ## Installation
 
