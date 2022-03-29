@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -112,11 +112,7 @@
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -128,31 +124,31 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -170,16 +166,14 @@ import { HttpClient } from '@angular/common/http';
 &nbsp;
 import { Observable } from 'rxjs';
 &nbsp;
-import { ObserveOptions, RestRequest } from '../../public';
-import { UrlParser } from '../../public/url-parser/url-parser';
-import { HttpRestClient } from '../../public/models/http-rest-client';
+import { HttpRestClient, ObserveOptions, RestRequest, UrlParser } from '../../public';
 &nbsp;
 @Injectable({ providedIn: 'root' })
 export class RestClientService&lt;T&gt; implements HttpRestClient&lt;T&gt; {
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
   }
 &nbsp;
-  request(request: RestRequest, observe: ObserveOptions): Observable&lt;T&gt; {
+  request = (request: RestRequest, observe: ObserveOptions): Observable&lt;T&gt; =&gt; {
     const method = request.method.toUpperCase();
     const baseUrl = this.getBaseUrl(request);
     const body = this.getBody(request, method);
@@ -189,21 +183,21 @@ export class RestClientService&lt;T&gt; implements HttpRestClient&lt;T&gt; {
         method,
         UrlParser.parse(baseUrl, request.endpoint, request.args),
         {
-          body: body,
+          body,
           headers: request.headers,
           params: request.params,
-          observe: observe,
+          observe,
           responseType: 'json',
           reportProgress: false
         }
       );
-  }
+  };
 &nbsp;
-  private getBaseUrl(request: RestRequest): string {
+  private getBaseUrl = (request: RestRequest): string =&gt; {
     return typeof request.baseUrl === 'function' ? <span class="branch-0 cbranch-no" title="branch not covered" >request.baseUrl() </span>: request.baseUrl;
-  }
+  };
 &nbsp;
-  private getBody(request: RestRequest, method: string): any {
+  private getBody = (request: RestRequest, method: string): any =&gt; {
     if (method === 'PATCH' || method === 'POST' || method === 'PUT') {
       return request.emptyBody
         ? <span class="branch-0 cbranch-no" title="branch not covered" >null</span>
@@ -213,7 +207,7 @@ export class RestClientService&lt;T&gt; implements HttpRestClient&lt;T&gt; {
     }
 &nbsp;
     return null;
-  }
+  };
 }
 &nbsp;
 &nbsp;</pre></td></tr></table></pre>
@@ -223,7 +217,7 @@ export class RestClientService&lt;T&gt; implements HttpRestClient&lt;T&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue Mar 29 2022 10:57:59 GMT+0100 (British Summer Time)
+                at Tue Mar 29 2022 11:41:00 GMT+0100 (British Summer Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>
