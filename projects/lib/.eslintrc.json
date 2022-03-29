@@ -16,6 +16,15 @@
         "createDefaultProgram": true
       },
       "rules": {
+        "prefer-arrow/prefer-arrow-functions": [
+          "off"
+        ],
+        "@typescript-eslint/naming-convention": [
+          "off"
+        ],
+        "@typescript-eslint/ban-types": [
+          "off"
+        ],
         "@angular-eslint/component-selector": [
           "error",
           {

@@ -19,6 +19,10 @@ export class RegistryImpl {
 
   private classes: { [ key: string ]: ClassDescriptor } = {};
 
+  get defaultClient() {
+    return instances.restClientInstance;
+  }
+
   registerRequest(method: string, endpoint: string, proto: any, property: string, options: RequestOptions) {
     const classDescriptor = this.getClassDescriptor(proto);
     const methodDescriptor = new MethodDescriptor(property);
@@ -69,11 +73,11 @@ export class RegistryImpl {
   }
 
   registerBeforeFilter(proto: any, method: Function, applyTo: OptionalList<string>) {
-    this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo: applyTo });
+    this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo });
   }
 
   registerAfterFilter(proto: any, method: Function, applyTo: OptionalList<string>) {
-    this.getClassDescriptor(proto).filtersAfter.push({ filterFunction: method, applyTo: applyTo });
+    this.getClassDescriptor(proto).filtersAfter.push({ filterFunction: method, applyTo });
   }
 
   getClassDescriptor(proto: any): ClassDescriptor {
@@ -87,13 +91,10 @@ export class RegistryImpl {
 
     return classDescriptor;
   }
-
-  get defaultClient() {
-    return instances.restClientInstance;
-  }
 }
 
 function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
+  // eslint-disable-next-line space-before-function-paren
   return function (...args: any[]) {
     if (!classDescriptor.methods.hasOwnProperty(property)) {
       throw new ReferenceError(`REST function "${ property }" is not defined for ${ classDescriptor.ctor.name }.`);
@@ -104,7 +105,7 @@ function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
       baseUrl: classDescriptor.baseUrl,
       endpoint: method.endpoint,
       method: method.method,
-      args: args,
+      args,
       headers: {},
       emptyBody: false,
       classDescriptor,

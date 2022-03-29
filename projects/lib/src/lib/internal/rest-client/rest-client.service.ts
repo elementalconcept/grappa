@@ -22,10 +22,10 @@ export class RestClientService<T> implements HttpRestClient<T> {
         method,
         UrlParser.parse(baseUrl, request.endpoint, request.args),
         {
-          body: body,
+          body,
           headers: request.headers,
           params: request.params,
-          observe: observe,
+          observe,
           responseType: 'json',
           reportProgress: false
         }
