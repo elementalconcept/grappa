@@ -96,7 +96,7 @@ export class RegistryImpl {
 function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
   return function (...args: any[]) {
     if (!classDescriptor.methods.hasOwnProperty(property)) {
-      throw new ReferenceError(`REST function "${property}" is not defined for ${classDescriptor.ctor.name}.`);
+      throw new ReferenceError(`REST function "${ property }" is not defined for ${ classDescriptor.ctor.name }.`);
     }
 
     const method = classDescriptor.methods[ property ];
