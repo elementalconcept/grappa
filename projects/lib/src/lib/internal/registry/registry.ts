@@ -5,7 +5,6 @@ import { instances } from '../instances/instances';
 import {
   ClassDescriptor,
   FilterDescriptor,
-  HttpRestClient,
   Initialisable,
   MethodDescriptor,
   ObserveOptions,
@@ -24,7 +23,7 @@ export class RegistryImpl {
     return instances.restClientInstance;
   }
 
-  registerRequest = (method: string, endpoint: string, proto: any, property: string, options: RequestOptions) => {
+  registerRequest = (method: string, endpoint: string, proto: any, property: string, options: RequestOptions): void => {
     const classDescriptor = this.getClassDescriptor(proto);
     const methodDescriptor = new MethodDescriptor(property);
 
@@ -36,39 +35,18 @@ export class RegistryImpl {
     proto[ property ] = prepareRequest(classDescriptor, property);
   };
 
-  registerClass = (baseUrl: UrlInput, constructor: Initialisable) => {
+  registerClass = (baseUrl: UrlInput, constructor: Initialisable): void => {
     const classDescriptor = this.getClassDescriptor(constructor.prototype);
 
     classDescriptor.ctor = constructor;
     classDescriptor.baseUrl = baseUrl;
   };
 
-  registerAlternativeHttpClient = <T>(proto: any, client: HttpRestClient<T>) =>
-    this.getClassDescriptor(proto).restClient = client;
-
-  putCustomMetadata = (proto: any, method: string, customKey: string, data: any) => {
-    const classDescriptor = this.getClassDescriptor(proto);
-
-    if (!classDescriptor.customMetadata.hasOwnProperty(method)) {
-      classDescriptor.customMetadata[ method ] = {};
-    }
-
-    classDescriptor.customMetadata[ method ][ customKey ] = data;
-  };
-
-  getCustomMetadata = (proto: any, method: string, customKey: string) => {
+  getCustomMetadata = (proto: any, method: string, customKey: string): any => {
     const classDescriptor = this.getClassDescriptor(proto);
 
     if (classDescriptor.customMetadata.hasOwnProperty(method) && classDescriptor.customMetadata[ method ].hasOwnProperty(customKey)) {
       return classDescriptor.customMetadata[ method ][ customKey ];
-    }
-
-    return null;
-  };
-
-  getCustomMetadataForDescriptor = (classDescriptor: ClassDescriptor, method: MethodDescriptor, customKey: string) => {
-    if (classDescriptor.customMetadata.hasOwnProperty(method.name) && classDescriptor.customMetadata[ method.name ].hasOwnProperty(customKey)) {
-      return classDescriptor.customMetadata[ method.name ][ customKey ];
     }
 
     return null;
