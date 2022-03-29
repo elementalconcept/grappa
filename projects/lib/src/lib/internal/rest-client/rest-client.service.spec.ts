@@ -2,7 +2,8 @@ import { inject, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { RestClientService } from './rest-client.service';
-import { ObserveOptions } from '../../public/models';
+
+import { ObserveOptions } from '../../public';
 
 describe('RestClientService', () => {
   beforeEach(() => {

@@ -1,4 +1,5 @@
 import { UID } from '../uid/uid';
+
 import { instances } from '../instances/instances';
 
 import {
@@ -12,7 +13,7 @@ import {
   RequestOptions,
   RestRequest,
   UrlInput
-} from '../../public/models';
+} from '../../public';
 
 export class RegistryImpl {
   private static readonly defaultRequestOptions: RequestOptions = { observe: ObserveOptions.Body };
@@ -23,65 +24,65 @@ export class RegistryImpl {
     return instances.restClientInstance;
   }
 
-  registerRequest(method: string, endpoint: string, proto: any, property: string, options: RequestOptions) {
+  registerRequest = (method: string, endpoint: string, proto: any, property: string, options: RequestOptions) => {
     const classDescriptor = this.getClassDescriptor(proto);
     const methodDescriptor = new MethodDescriptor(property);
+
     methodDescriptor.method = method;
     methodDescriptor.endpoint = endpoint;
     methodDescriptor.options = Object.assign({}, RegistryImpl.defaultRequestOptions, options);
     classDescriptor.methods[ property ] = methodDescriptor;
 
     proto[ property ] = prepareRequest(classDescriptor, property);
-  }
+  };
 
-  registerClass(baseUrl: UrlInput, constructor: Initialisable) {
+  registerClass = (baseUrl: UrlInput, constructor: Initialisable) => {
     const classDescriptor = this.getClassDescriptor(constructor.prototype);
+
     classDescriptor.ctor = constructor;
     classDescriptor.baseUrl = baseUrl;
-  }
+  };
 
-  registerAlternativeHttpClient<T>(proto: any, client: HttpRestClient<T>) {
+  registerAlternativeHttpClient = <T>(proto: any, client: HttpRestClient<T>) =>
     this.getClassDescriptor(proto).restClient = client;
-  }
 
-  putCustomMetadata(proto: any, method: string, customKey: string, data: any) {
-    const clsd = this.getClassDescriptor(proto);
+  putCustomMetadata = (proto: any, method: string, customKey: string, data: any) => {
+    const classDescriptor = this.getClassDescriptor(proto);
 
-    if (!clsd.customMetadata.hasOwnProperty(method)) {
-      clsd.customMetadata[ method ] = {};
+    if (!classDescriptor.customMetadata.hasOwnProperty(method)) {
+      classDescriptor.customMetadata[ method ] = {};
     }
 
-    clsd.customMetadata[ method ][ customKey ] = data;
-  }
+    classDescriptor.customMetadata[ method ][ customKey ] = data;
+  };
 
-  getCustomMetadata(proto: any, method: string, customKey: string) {
-    const clsd = this.getClassDescriptor(proto);
+  getCustomMetadata = (proto: any, method: string, customKey: string) => {
+    const classDescriptor = this.getClassDescriptor(proto);
 
-    if (clsd.customMetadata.hasOwnProperty(method) && clsd.customMetadata[ method ].hasOwnProperty(customKey)) {
-      return clsd.customMetadata[ method ][ customKey ];
-    }
-
-    return null;
-  }
-
-  getCustomMetadataForDescriptor(clsd: ClassDescriptor, method: MethodDescriptor, customKey: string) {
-    if (clsd.customMetadata.hasOwnProperty(method.name) && clsd.customMetadata[ method.name ].hasOwnProperty(customKey)) {
-      return clsd.customMetadata[ method.name ][ customKey ];
+    if (classDescriptor.customMetadata.hasOwnProperty(method) && classDescriptor.customMetadata[ method ].hasOwnProperty(customKey)) {
+      return classDescriptor.customMetadata[ method ][ customKey ];
     }
 
     return null;
-  }
+  };
 
-  registerBeforeFilter(proto: any, method: Function, applyTo: OptionalList<string>) {
+  getCustomMetadataForDescriptor = (classDescriptor: ClassDescriptor, method: MethodDescriptor, customKey: string) => {
+    if (classDescriptor.customMetadata.hasOwnProperty(method.name) && classDescriptor.customMetadata[ method.name ].hasOwnProperty(customKey)) {
+      return classDescriptor.customMetadata[ method.name ][ customKey ];
+    }
+
+    return null;
+  };
+
+  registerBeforeFilter = (proto: any, method: Function, applyTo: OptionalList<string>) =>
     this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo });
-  }
 
-  registerAfterFilter(proto: any, method: Function, applyTo: OptionalList<string>) {
+  registerAfterFilter = (proto: any, method: Function, applyTo: OptionalList<string>) =>
     this.getClassDescriptor(proto).filtersAfter.push({ filterFunction: method, applyTo });
-  }
 
-  getClassDescriptor(proto: any): ClassDescriptor {
+  getClassDescriptor = (proto: any): ClassDescriptor => {
     const uid = UID(proto);
+
     let classDescriptor = this.classes[ uid ];
 
     if (classDescriptor === undefined) {
@@ -90,7 +91,7 @@ export class RegistryImpl {
     }
 
     return classDescriptor;
-  }
+  };
 }
 
 function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
@@ -152,6 +153,7 @@ function isApplicable(filter: FilterDescriptor, property: string) {
   }
 
   const nameList = typeof filter.applyTo === 'string' ? [ filter.applyTo ] : filter.applyTo;
+
   return nameList.indexOf(property) >= 0;
 }
 
