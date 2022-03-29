@@ -1,42 +1,29 @@
 # Grappa
 
-Decorator-powered REST client for Angular 12 and its HttpClient, plus RxJs 6+.
+Decorator-powered REST client for **Angular 9+** and its HttpClient, plus **RxJs 6+**.
 
-For previous versions of Angular use **Grappa** `v0.8.3`.
+| Package  | Angular Version | Supported |
+|----------|-----------------|-----------|
+| `v0.8.3` | > = 9 < 12       | ❌         |
+| `v0.8.4` | > = 9 < 13       | ✅         |
+| `v0.8.5` | > = 9 < 14       | ✅         |
 
-## Installation
+## 🛠 Installation
 
-With npm:
-
-```Shell
-$ npm i --save @elemental-concept/grappa
-```
-
-With Yarn:
-
-```Shell
-$ yarn add @elemental-concept/grappa
-```
+- With **npm**: `npm i --save @elemental-concept/grappa`
+- With **Yarn**: `yarn add @elemental-concept/grappa`
 
 Add `GrappaModule` to your main `AppModule` to imports section.
 
 ```typescript
-@NgModule({
-  declarations: [ ... ],
-  imports: [
-    ...,
-    GrappaModule
-  ],
-  providers: [ ],
-  bootstrap: [ ... ]
-})
-export class AppModule { }
+@NgModule({ imports: [ GrappaModule ] })
+export class AppModule {}
 ```
 
-## Introduction
+## 📖 Introduction
 
-**Grappa** minimises boiler-plate code required for REST clients and streamlines request and response
-modifications with filters. Simply define a list of methods which reflect REST API:
+**Grappa** minimises boilerplate code required for REST clients and streamlines request and response modifications with filters. 
+Simply define a list of methods which reflect REST API:
 
 ```typescript
 @Injectable()
@@ -67,13 +54,13 @@ export class UserService {
 })
 export class AppComponent {
   constructor(private userService: UserService) {
-    userService.find(42).subscribe(user => console.log(user));
+    userService.find(42).subscribe(console.log);
   }
 }
 ```
 
-Define `@BeforeRequest()` filter methods to uniformly modify data being sent to the API.
-A good example could be JWT injection, but we are covering that with a separate library 
+Define `@BeforeRequest()` filter methods to uniformly modify data being sent to the API. 
+A good example could be JWT injection, but we are covering that with a separate library
 [Grappa JWT](https://github.com/elementalconcept/grappa-jwt)
 
 Custom header injection is a good example:
@@ -84,7 +71,8 @@ Custom header injection is a good example:
 export class UserService {
   // ...
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+  }
 
   @BeforeRequest()
   private customHeaders(request: RestRequest) {
@@ -129,9 +117,9 @@ Decorators on a class and its properties define how a request will be handled.
 
 ### `@RestClient(baseUrl: string = '')`
 
-Optional decorator which allows to define base URL for all REST methods in a class.
-If decorator is not present or `baseUrl` argument is empty string, `null` or `undefined`,
-then it is assumed that property decorators will contain full URLs.
+Optional decorator which allows to define base URL for all REST methods in a class. If decorator is not present
+or `baseUrl` argument is empty string, `null` or `undefined`, then it is assumed that property decorators will contain
+full URLs.
 
 Example with `@RestClient`:
 
@@ -158,8 +146,8 @@ export class UserService {
 
 ### `@GET(endpoint: string, options: RequestOptions = {})`
 
-Makes HTTP GET request to the specified end-point. Arguments passed to the decorated function can be
-inserted into end-point URL using index based templates. Indices start at 0. Example:
+Makes HTTP GET request to the specified end-point. Arguments passed to the decorated function can be inserted into
+end-point URL using index based templates. Indices start at 0. Example:
 
 ```typescript
 @GET('/users/{0}/posts?page={1}')
@@ -172,21 +160,20 @@ getUserPosts: (userId: number, page: number) => Observable<Post[]>;
 
 ### `@PATCH(endpoint: string, options: RequestOptions = {})`
 
-Makes HTTP PATCH request to the specified end-point. Arguments passed to the decorated function can be
-inserted into end-point URL using index based templates. Indices start at 0. Last function argument will be used
-as a PATCH body.
+Makes HTTP PATCH request to the specified end-point. Arguments passed to the decorated function can be inserted into
+end-point URL using index based templates. Indices start at 0. Last function argument will be used as a PATCH body.
 
 ```typescript
 @PATCH('/users/{0}', options: RequestOptions = {})
-update: (userId: number. user: User) => Observable<User>;
+update: (userId: number.user: User) => Observable<User>;
 ```
+
 ---
 
 ### `@POST(endpoint: string, options: RequestOptions = {})`
 
-Makes HTTP POST request to the specified end-point. Arguments passed to the decorated function can be
-inserted into end-point URL using index based templates. Indices start at 0. Last function argument will be used
-as a POST body. 
+Makes HTTP POST request to the specified end-point. Arguments passed to the decorated function can be inserted into
+end-point URL using index based templates. Indices start at 0. Last function argument will be used as a POST body.
 
 ```typescript
 @POST('/users')
@@ -197,21 +184,20 @@ create: (user: User) => Observable<User>;
 
 ### `@PUT(endpoint: string, options: RequestOptions = {})`
 
-Makes HTTP PUT request to the specified end-point. Arguments passed to the decorated function can be
-inserted into end-point URL using index based templates. Indices start at 0. Last function argument will be used
-as a PUT body. 
+Makes HTTP PUT request to the specified end-point. Arguments passed to the decorated function can be inserted into
+end-point URL using index based templates. Indices start at 0. Last function argument will be used as a PUT body.
 
 ```typescript
 @PUT('/users/{0}', options: RequestOptions = {})
-update: (userId: number. user: User) => Observable<User>;
+update: (userId: number.user: User) => Observable<User>;
 ```
 
 ---
 
 ### `@DELETE(endpoint: string, options: RequestOptions = {})`
 
-Makes HTTP DELETE request to the specified end-point. Arguments passed to the decorated function can be
-inserted into end-point URL using index based templates. Indices start at 0. Example:
+Makes HTTP DELETE request to the specified end-point. Arguments passed to the decorated function can be inserted into
+end-point URL using index based templates. Indices start at 0. Example:
 
 ```typescript
 @DELETE('/users/{0}')
@@ -270,8 +256,8 @@ Given
 getUserPosts: (userId: number, page: number) => Observable<Post[]>;
 ```
 
-you'll have `{1}` as the `page` attribute, but if instead you have multiple query params, 
-the best approach is to have a single object and then use the `query` option:
+you'll have `{1}` as the `page` attribute, but if instead you have multiple query params, the best approach is to have a
+single object and then use the `query` option:
 
 ```typescript
 @GET('/users/{0}/posts', { query: true })
@@ -281,11 +267,11 @@ getUserPosts: (userId: number, { page: number, search: string, sort: string, hid
 This way **Grappa** will translate the object into a list of query params, like this:
 
 ```typescript
-`/users/{0}/posts?page=${page}&search=${search}&sort=${sort}&hideOutOfStock=${hideOutOfStock}`
+`/users/{0}/posts?page=${ page }&search=${ search }&sort=${ sort }&hideOutOfStock=${ hideOutOfStock }`
 ```
 
-If for any reason you need to send a `PUT` or a `POST` without a body (which is not a good practise), 
-we added a new flag `emptyBody`, that allow that. So you could send something like this:
+If for any reason you need to send a `PUT` or a `POST` without a body (which is not a good practise), we added a new
+flag `emptyBody`, that allow that. So you could send something like this:
 
 ```typescript
 @PUT('/users/{0}', { emptyBody: true })
