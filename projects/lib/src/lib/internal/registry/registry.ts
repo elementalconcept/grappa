@@ -65,12 +65,6 @@ export class RegistryImpl {
   getCustomMetadataForDescriptor = (classDescriptor: ClassDescriptor, method: MethodDescriptor, customKey: string) =>
     this.getCustomMetadataImpl(classDescriptor, method.name, customKey);
 
-  private getCustomMetadataImpl = (classDescriptor: ClassDescriptor, methodNAme: string, customKey: string) =>
-    classDescriptor.customMetadata.hasOwnProperty(methodNAme)
-    && classDescriptor.customMetadata[ methodNAme ].hasOwnProperty(customKey)
-      ? classDescriptor.customMetadata[ methodNAme ][ customKey ]
-      : null;
-
   registerBeforeFilter = (proto: any, method: Function, applyTo: OptionalList<string>) =>
     this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo });
 
@@ -89,6 +83,12 @@ export class RegistryImpl {
 
     return classDescriptor;
   };
+
+  private getCustomMetadataImpl = (classDescriptor: ClassDescriptor, methodNAme: string, customKey: string) =>
+    classDescriptor.customMetadata.hasOwnProperty(methodNAme)
+    && classDescriptor.customMetadata[ methodNAme ].hasOwnProperty(customKey)
+      ? classDescriptor.customMetadata[ methodNAme ][ customKey ]
+      : null;
 }
 
 function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
