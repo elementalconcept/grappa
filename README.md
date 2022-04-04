@@ -19,8 +19,8 @@ Add `GrappaModule` to your main `AppModule` to imports section.
   imports: [
     ...,
     GrappaModule
-],
-providers: [ ],
+  ],
+  providers: [ ],
   bootstrap: [ ... ]
 })
 export class AppModule {
