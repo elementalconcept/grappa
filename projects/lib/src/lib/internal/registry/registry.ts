@@ -46,7 +46,7 @@ export class RegistryImpl {
   registerAlternativeHttpClient = <T>(proto: any, client: HttpRestClient<T>) =>
     this.getClassDescriptor(proto).restClient = client;
 
-  putCustomMetadata = (proto: any, method: string, customKey: string, data: any) => {
+  putCustomMetadata = (proto: any, method: string, customKey: string, data: any): void => {
     const classDescriptor = this.getClassDescriptor(proto);
 
     if (!classDescriptor.customMetadata.hasOwnProperty(method)) {
@@ -56,7 +56,7 @@ export class RegistryImpl {
     classDescriptor.customMetadata[ method ][ customKey ] = data;
   };
 
-  getCustomMetadata = (proto: any, method: string, customKey: string): any => {
+  getCustomMetadata = (proto: any, method: string, customKey: string) => {
     const classDescriptor = this.getClassDescriptor(proto);
 
     return this.getCustomMetadataImpl(classDescriptor, method, customKey);
