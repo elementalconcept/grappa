@@ -172,7 +172,7 @@ end-point URL using index based templates. Indices start at 0. Last function arg
 
 ```typescript
 @PATCH('/users/{0}', options: RequestOptions = {})
-update: (userId: number.user: User) => Observable<User>;
+update: (userId: number, user: User) => Observable<User>;
 ```
 
 ---
