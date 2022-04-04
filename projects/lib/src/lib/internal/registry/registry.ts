@@ -13,6 +13,7 @@ import {
   RestRequest,
   UrlInput
 } from '../../public';
+import { HttpRestClient } from 'lib';
 
 export class RegistryImpl {
   private static readonly defaultRequestOptions: RequestOptions = { observe: ObserveOptions.Body };
@@ -42,15 +43,33 @@ export class RegistryImpl {
     classDescriptor.baseUrl = baseUrl;
   };
 
+  registerAlternativeHttpClient = <T>(proto: any, client: HttpRestClient<T>) =>
+    this.getClassDescriptor(proto).restClient = client;
+
+  putCustomMetadata = (proto: any, method: string, customKey: string, data: any) => {
+    const classDescriptor = this.getClassDescriptor(proto);
+
+    if (!classDescriptor.customMetadata.hasOwnProperty(method)) {
+      classDescriptor.customMetadata[ method ] = {};
+    }
+
+    classDescriptor.customMetadata[ method ][ customKey ] = data;
+  };
+
   getCustomMetadata = (proto: any, method: string, customKey: string): any => {
     const classDescriptor = this.getClassDescriptor(proto);
 
-    if (classDescriptor.customMetadata.hasOwnProperty(method) && classDescriptor.customMetadata[ method ].hasOwnProperty(customKey)) {
-      return classDescriptor.customMetadata[ method ][ customKey ];
-    }
-
-    return null;
+    return this.getCustomMetadataImpl(classDescriptor, method, customKey);
   };
+
+  getCustomMetadataForDescriptor = (classDescriptor: ClassDescriptor, method: MethodDescriptor, customKey: string) =>
+    this.getCustomMetadataImpl(classDescriptor, method.name, customKey);
+
+  private getCustomMetadataImpl = (classDescriptor: ClassDescriptor, methodNAme: string, customKey: string) =>
+    classDescriptor.customMetadata.hasOwnProperty(methodNAme)
+    && classDescriptor.customMetadata[ methodNAme ].hasOwnProperty(customKey)
+      ? classDescriptor.customMetadata[ methodNAme ][ customKey ]
+      : null;
 
   registerBeforeFilter = (proto: any, method: Function, applyTo: OptionalList<string>) =>
     this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo });
