@@ -1,6 +1,6 @@
 {
   "name": "@elemental-concept/grappa",
-  "version": "0.8.5",
+  "version": "0.8.5-1-SNAPSHOT",
   "description": "Decorator-powered REST client for Angular 6 and its HttpClient",
   "author": "Elemental Concept",
   "homepage": "https://github.com/elementalconcept/grappa#readme",

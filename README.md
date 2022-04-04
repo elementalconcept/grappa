@@ -2,11 +2,9 @@
 
 Decorator-powered REST client for **Angular 9+** and its HttpClient, plus **RxJs 6+**.
 
-| Package | Angular Version | Node | Supported |
-|---------|-----------------|------|-----------|
-| `0.8.3` | > = 9 < 12       | 10   | ❌         |
-| `0.8.4` | > = 9 < 13       | 10   | ✅         |
-| `0.8.5` | > = 9 < 14       | 12   | ✅         |
+| Last version | Angular Version | Node |
+|--------------|-----------------|------|
+| `0.8.5`      | 9+              | 12   |
 
 ## 🛠 Installation
 
@@ -16,8 +14,17 @@ Decorator-powered REST client for **Angular 9+** and its HttpClient, plus **RxJs
 Add `GrappaModule` to your main `AppModule` to imports section.
 
 ```typescript
-@NgModule({ imports: [ GrappaModule ] })
-export class AppModule {}
+@NgModule({
+  declarations: [ ... ],
+  imports: [
+    ...,
+    GrappaModule
+],
+providers: [ ],
+  bootstrap: [ ... ]
+})
+export class AppModule {
+}
 ```
 
 ## 📖 Introduction
@@ -54,7 +61,7 @@ export class UserService {
 })
 export class AppComponent {
   constructor(private userService: UserService) {
-    userService.find(42).subscribe(console.log);
+    userService.find(42).subscribe(user => console.log(user));
   }
 }
 ```
