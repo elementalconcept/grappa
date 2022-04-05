@@ -43,27 +43,11 @@ export class RegistryImpl {
     classDescriptor.baseUrl = baseUrl;
   };
 
-  registerAlternativeHttpClient = <T>(proto: any, client: HttpRestClient<T>) =>
-    this.getClassDescriptor(proto).restClient = client;
-
-  putCustomMetadata = (proto: any, method: string, customKey: string, data: any): void => {
-    const classDescriptor = this.getClassDescriptor(proto);
-
-    if (!classDescriptor.customMetadata.hasOwnProperty(method)) {
-      classDescriptor.customMetadata[ method ] = {};
-    }
-
-    classDescriptor.customMetadata[ method ][ customKey ] = data;
-  };
-
   getCustomMetadata = (proto: any, method: string, customKey: string) => {
     const classDescriptor = this.getClassDescriptor(proto);
 
     return this.getCustomMetadataImpl(classDescriptor, method, customKey);
   };
-
-  getCustomMetadataForDescriptor = (classDescriptor: ClassDescriptor, method: MethodDescriptor, customKey: string) =>
-    this.getCustomMetadataImpl(classDescriptor, method.name, customKey);
 
   registerBeforeFilter = (proto: any, method: Function, applyTo: OptionalList<string>) =>
     this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo });
@@ -83,6 +67,25 @@ export class RegistryImpl {
 
     return classDescriptor;
   };
+
+  // used for Grappa-Cache
+  registerAlternativeHttpClient = <T>(proto: any, client: HttpRestClient<T>) =>
+    this.getClassDescriptor(proto).restClient = client;
+
+  // used for Grappa-Cache
+  putCustomMetadata = (proto: any, method: string, customKey: string, data: any): void => {
+    const classDescriptor = this.getClassDescriptor(proto);
+
+    if (!classDescriptor.customMetadata.hasOwnProperty(method)) {
+      classDescriptor.customMetadata[ method ] = {};
+    }
+
+    classDescriptor.customMetadata[ method ][ customKey ] = data;
+  };
+
+  // used for Grappa-Cache
+  getCustomMetadataForDescriptor = (classDescriptor: ClassDescriptor, method: MethodDescriptor, customKey: string) =>
+    this.getCustomMetadataImpl(classDescriptor, method.name, customKey);
 
   private getCustomMetadataImpl = (classDescriptor: ClassDescriptor, methodNAme: string, customKey: string) =>
     classDescriptor.customMetadata.hasOwnProperty(methodNAme)

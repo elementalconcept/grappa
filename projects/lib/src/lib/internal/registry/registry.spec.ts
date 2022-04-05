@@ -1,5 +1,7 @@
 import { DELETE, GET, PATCH, POST, PUT, RestClient } from '../../public/decorators';
+
 import { Registry } from './registry';
+
 import { UID } from '../uid/uid';
 
 @RestClient('http://localhost/')
