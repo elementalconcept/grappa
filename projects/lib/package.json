@@ -16,8 +16,8 @@
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
-    "@angular/common": ">= 9 < 14",
-    "@angular/core": ">= 9 < 14",
+    "@angular/common": ">= 9 < 15",
+    "@angular/core": ">= 9 < 15",
     "rxjs": ">= 6.0.0 < 8"
   }
 }

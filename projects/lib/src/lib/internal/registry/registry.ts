@@ -5,6 +5,7 @@ import { instances } from '../instances/instances';
 import {
   ClassDescriptor,
   FilterDescriptor,
+  HttpRestClient,
   Initialisable,
   MethodDescriptor,
   ObserveOptions,
@@ -13,7 +14,6 @@ import {
   RestRequest,
   UrlInput
 } from '../../public';
-import { HttpRestClient } from 'lib';
 
 export class RegistryImpl {
   private static readonly defaultRequestOptions: RequestOptions = { observe: ObserveOptions.Body };
