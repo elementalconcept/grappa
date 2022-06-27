@@ -1,4 +1,5 @@
 import { UID } from '../uid/uid';
+
 import { instances } from '../instances/instances';
 
 import {
@@ -12,72 +13,51 @@ import {
   RequestOptions,
   RestRequest,
   UrlInput
-} from '../../public/models';
+} from '../../public';
 
 export class RegistryImpl {
   private static readonly defaultRequestOptions: RequestOptions = { observe: ObserveOptions.Body };
 
   private classes: { [ key: string ]: ClassDescriptor } = {};
 
-  registerRequest(method: string, endpoint: string, proto: any, property: string, options: RequestOptions) {
+  get defaultClient() {
+    return instances.restClientInstance;
+  }
+
+  registerRequest = (method: string, endpoint: string, proto: any, property: string, options: RequestOptions): void => {
     const classDescriptor = this.getClassDescriptor(proto);
     const methodDescriptor = new MethodDescriptor(property);
+
     methodDescriptor.method = method;
     methodDescriptor.endpoint = endpoint;
     methodDescriptor.options = Object.assign({}, RegistryImpl.defaultRequestOptions, options);
     classDescriptor.methods[ property ] = methodDescriptor;
 
     proto[ property ] = prepareRequest(classDescriptor, property);
-  }
+  };
 
-  registerClass(baseUrl: UrlInput, constructor: Initialisable) {
+  registerClass = (baseUrl: UrlInput, constructor: Initialisable): void => {
     const classDescriptor = this.getClassDescriptor(constructor.prototype);
+
     classDescriptor.ctor = constructor;
     classDescriptor.baseUrl = baseUrl;
-  }
+  };
 
-  registerAlternativeHttpClient<T>(proto: any, client: HttpRestClient<T>) {
-    this.getClassDescriptor(proto).restClient = client;
-  }
+  getCustomMetadata = (proto: any, method: string, customKey: string) => {
+    const classDescriptor = this.getClassDescriptor(proto);
 
-  putCustomMetadata(proto: any, method: string, customKey: string, data: any) {
-    const clsd = this.getClassDescriptor(proto);
+    return this.getCustomMetadataImpl(classDescriptor, method, customKey);
+  };
 
-    if (!clsd.customMetadata.hasOwnProperty(method)) {
-      clsd.customMetadata[ method ] = {};
-    }
+  registerBeforeFilter = (proto: any, method: Function, applyTo: OptionalList<string>) =>
+    this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo });
 
-    clsd.customMetadata[ method ][ customKey ] = data;
-  }
+  registerAfterFilter = (proto: any, method: Function, applyTo: OptionalList<string>) =>
+    this.getClassDescriptor(proto).filtersAfter.push({ filterFunction: method, applyTo });
 
-  getCustomMetadata(proto: any, method: string, customKey: string) {
-    const clsd = this.getClassDescriptor(proto);
-
-    if (clsd.customMetadata.hasOwnProperty(method) && clsd.customMetadata[ method ].hasOwnProperty(customKey)) {
-      return clsd.customMetadata[ method ][ customKey ];
-    }
-
-    return null;
-  }
-
-  getCustomMetadataForDescriptor(clsd: ClassDescriptor, method: MethodDescriptor, customKey: string) {
-    if (clsd.customMetadata.hasOwnProperty(method.name) && clsd.customMetadata[ method.name ].hasOwnProperty(customKey)) {
-      return clsd.customMetadata[ method.name ][ customKey ];
-    }
-
-    return null;
-  }
-
-  registerBeforeFilter(proto: any, method: Function, applyTo: OptionalList<string>) {
-    this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo: applyTo });
-  }
-
-  registerAfterFilter(proto: any, method: Function, applyTo: OptionalList<string>) {
-    this.getClassDescriptor(proto).filtersAfter.push({ filterFunction: method, applyTo: applyTo });
-  }
-
-  getClassDescriptor(proto: any): ClassDescriptor {
+  getClassDescriptor = (proto: any): ClassDescriptor => {
     const uid = UID(proto);
+
     let classDescriptor = this.classes[ uid ];
 
     if (classDescriptor === undefined) {
@@ -86,17 +66,39 @@ export class RegistryImpl {
     }
 
     return classDescriptor;
-  }
+  };
 
-  get defaultClient() {
-    return instances.restClientInstance;
-  }
+  // used for Grappa-Cache
+  registerAlternativeHttpClient = <T>(proto: any, client: HttpRestClient<T>) =>
+    this.getClassDescriptor(proto).restClient = client;
+
+  // used for Grappa-Cache
+  putCustomMetadata = (proto: any, method: string, customKey: string, data: any): void => {
+    const classDescriptor = this.getClassDescriptor(proto);
+
+    if (!classDescriptor.customMetadata.hasOwnProperty(method)) {
+      classDescriptor.customMetadata[ method ] = {};
+    }
+
+    classDescriptor.customMetadata[ method ][ customKey ] = data;
+  };
+
+  // used for Grappa-Cache
+  getCustomMetadataForDescriptor = (classDescriptor: ClassDescriptor, method: MethodDescriptor, customKey: string) =>
+    this.getCustomMetadataImpl(classDescriptor, method.name, customKey);
+
+  private getCustomMetadataImpl = (classDescriptor: ClassDescriptor, methodNAme: string, customKey: string) =>
+    classDescriptor.customMetadata.hasOwnProperty(methodNAme)
+    && classDescriptor.customMetadata[ methodNAme ].hasOwnProperty(customKey)
+      ? classDescriptor.customMetadata[ methodNAme ][ customKey ]
+      : null;
 }
 
 function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
+  // eslint-disable-next-line space-before-function-paren
   return function (...args: any[]) {
     if (!classDescriptor.methods.hasOwnProperty(property)) {
-      throw new ReferenceError(`REST function "${property}" is not defined for ${classDescriptor.ctor.name}.`);
+      throw new ReferenceError(`REST function "${ property }" is not defined for ${ classDescriptor.ctor.name }.`);
     }
 
     const method = classDescriptor.methods[ property ];
@@ -104,7 +106,7 @@ function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
       baseUrl: classDescriptor.baseUrl,
       endpoint: method.endpoint,
       method: method.method,
-      args: args,
+      args,
       headers: {},
       emptyBody: false,
       classDescriptor,
@@ -151,6 +153,7 @@ function isApplicable(filter: FilterDescriptor, property: string) {
   }
 
   const nameList = typeof filter.applyTo === 'string' ? [ filter.applyTo ] : filter.applyTo;
+
   return nameList.indexOf(property) >= 0;
 }
 

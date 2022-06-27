@@ -6,10 +6,11 @@ export interface RestRequest {
   baseUrl: UrlInput;
   endpoint: string;
   method: string;
-  headers: { [ header: string ]: string; };
-  params?: { [ param: string ]: string; };
+  headers: { [ header: string ]: string };
   args: any[];
   emptyBody: boolean;
   classDescriptor: ClassDescriptor;
   methodDescriptor: MethodDescriptor;
+
+  params?: { [ param: string ]: string };
 }

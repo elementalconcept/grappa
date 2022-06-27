@@ -3,16 +3,14 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 
-import { ObserveOptions, RestRequest } from '../../public';
-import { UrlParser } from '../../public/url-parser/url-parser';
-import { HttpRestClient } from '../../public/models/http-rest-client';
+import { HttpRestClient, ObserveOptions, RestRequest, UrlParser } from '../../public';
 
 @Injectable({ providedIn: 'root' })
 export class RestClientService<T> implements HttpRestClient<T> {
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
   }
 
-  request(request: RestRequest, observe: ObserveOptions): Observable<T> {
+  request = (request: RestRequest, observe: ObserveOptions): Observable<T> => {
     const method = request.method.toUpperCase();
     const baseUrl = this.getBaseUrl(request);
     const body = this.getBody(request, method);
@@ -22,21 +20,22 @@ export class RestClientService<T> implements HttpRestClient<T> {
         method,
         UrlParser.parse(baseUrl, request.endpoint, request.args),
         {
-          body: body,
+          body,
           headers: request.headers,
           params: request.params,
-          observe: observe,
+          observe,
           responseType: 'json',
           reportProgress: false
         }
       );
-  }
+  };
 
-  private getBaseUrl(request: RestRequest): string {
-    return typeof request.baseUrl === 'function' ? request.baseUrl() : request.baseUrl;
-  }
+  private getBaseUrl = (request: RestRequest): string =>
+    typeof request.baseUrl === 'function'
+      ? request.baseUrl()
+      : request.baseUrl;
 
-  private getBody(request: RestRequest, method: string): any {
+  private getBody = (request: RestRequest, method: string): any => {
     if (method === 'PATCH' || method === 'POST' || method === 'PUT') {
       return request.emptyBody
         ? null
@@ -46,6 +45,6 @@ export class RestClientService<T> implements HttpRestClient<T> {
     }
 
     return null;
-  }
+  };
 }
 
