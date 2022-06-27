@@ -2,9 +2,9 @@
 
 Decorator-powered REST client for **Angular 9+** and its HttpClient, plus **RxJs 6+**.
 
-| Last version | Angular Version | Node |
-|--------------|-----------------|------|
-| `0.8.5`      | 9+              | 12   |
+| Last version | Angular Versions       | Node |
+|--------------|------------------------|------|
+| `0.8.5`      | 9+ up to 14 (included) | 12   |
 
 ## 🛠 Installation
 
