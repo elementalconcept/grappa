@@ -285,6 +285,14 @@ flag `emptyBody`, that allow that. So you could send something like this:
 getUserPosts: (userId) => Observable<Post[]>;
 ```
 
+If for any reason you need to send a `PUT` or a `POST` url params as well as query params as well body object,
+you need to specify which arg index is the query params
+
+```typescript
+@PUT('/users/{0}', { query: 1 })
+getUserPosts: (userId, queryParams: { name: string }, body: User) => Observable<Post[]>;
+```
+
 ---
 
 ### OptionalList<string>
