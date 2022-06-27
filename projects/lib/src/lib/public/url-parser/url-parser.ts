@@ -4,11 +4,10 @@ export class UrlParser {
   private static readonly SlashPrefix = /^[\\/]*/;
   private static readonly Placeholder = /{([0-9]+)}/g;
 
-  static parse = (baseUrl: string, endpoint: string, args: any[]) => {
-    return UrlParser
+  static parse = (baseUrl: string, endpoint: string, args: any[]) =>
+    UrlParser
       .merge(baseUrl, endpoint)
       .replace(UrlParser.Placeholder, (match, index) => UrlParser.replace(index, args));
-  };
 
   private static replace = (index, args: any[]): string => {
     const idx = parseInt(index, 10);

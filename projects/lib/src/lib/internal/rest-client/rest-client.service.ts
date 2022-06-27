@@ -30,9 +30,10 @@ export class RestClientService<T> implements HttpRestClient<T> {
       );
   };
 
-  private getBaseUrl = (request: RestRequest): string => {
-    return typeof request.baseUrl === 'function' ? request.baseUrl() : request.baseUrl;
-  };
+  private getBaseUrl = (request: RestRequest): string =>
+    typeof request.baseUrl === 'function'
+      ? request.baseUrl()
+      : request.baseUrl;
 
   private getBody = (request: RestRequest, method: string): any => {
     if (method === 'PATCH' || method === 'POST' || method === 'PUT') {
