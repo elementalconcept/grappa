@@ -2,14 +2,13 @@
 
 Decorator-powered REST client for **Angular 9+** and its HttpClient, plus **RxJs 6+**.
 
-| Last version | Angular Versions       | Node             |
-|--------------|------------------------|------------------|
-| `0.8.6`      | 9+ up to 14 (included) | 14.15.0 or later |
+| Last version | Angular Versions       | Node | Typescript |
+|--------------|------------------------|------|------------|
+| `0.8.7`      | 9+ up to 13 (included) | 14   | 4.6        |
 
 ## 🛠 Installation
 
 - With **npm**: `npm i --save @elemental-concept/grappa`
-- With **Yarn**: `yarn add @elemental-concept/grappa`
 
 Add `GrappaModule` to your main `AppModule` to imports section.
 
