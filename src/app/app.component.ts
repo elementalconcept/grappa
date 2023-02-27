@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 
-import { TestClientService } from './services/test-client.service';
 import { tap } from 'rxjs/operators';
+
+import { TestClientService } from './services';
 
 @Component({
   selector: 'app-root',
@@ -9,12 +10,12 @@ import { tap } from 'rxjs/operators';
   styleUrls: [ './app.component.css' ]
 })
 export class AppComponent {
-  findResponse;
-  listResponse;
-  querySampleResponse;
-  toggleFlagResponse;
-  createResponse;
-  updateResponse;
+  findResponse: any | null = null;
+  listResponse: any | null = null;
+  querySampleResponse: any | null = null;
+  toggleFlagResponse: any | null = null;
+  createResponse: any | null = null;
+  updateResponse: any | null = null;
 
   constructor(private client: TestClientService) {
     client

@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { GrappaModule } from '@elemental-concept/grappa';
+
 import { AppComponent } from './app.component';
-import { GrappaModule } from '../../projects/lib/src/lib/grappa.module';
 
 @NgModule({
   declarations: [
