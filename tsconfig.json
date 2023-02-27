@@ -19,11 +19,8 @@
       "dom"
     ],
     "paths": {
-      "lib": [
+      "@elemental-concept/grappa": [
         "dist/lib"
-      ],
-      "lib/*": [
-        "dist/lib/*"
       ]
     },
     "useDefineForClassFields": false

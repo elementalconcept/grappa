@@ -5,9 +5,10 @@
     "ng": "ng",
     "mock-server": "mockserver -p 8081 -m mockserver",
     "start": "ng serve --port=4201",
-    "start-all": "npm run star-mock-server & npm run start",
+    "start-all": "npm run mock-server & npm run start",
     "build": "ng build lib --configuration production",
-    "publish": "npm publish dist/lib",
+    "watch": "ng build lib --watch",
+    "publish": "npm run build && npm publish ./dist/lib",
     "test": "ng test --code-coverage=true --watch=false",
     "lint": "npx ng lint",
     "e2e": "ng e2e"
