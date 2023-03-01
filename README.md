@@ -10,17 +10,13 @@ Decorator-powered REST client for **Angular 9+** and its HttpClient, plus **RxJs
 
 - With **npm**: `npm i --save @elemental-concept/grappa`
 
-Add `GrappaModule` to your main `AppModule` to imports section.
+Add `GrappaModule` to your main `AppModule` imports section.
 
 ```typescript
 @NgModule({
-  declarations: [ ... ],
   imports: [
-    ...,
     GrappaModule
-  ],
-  providers: [ ],
-  bootstrap: [ ... ]
+  ]
 })
 export class AppModule {
 }
@@ -28,7 +24,7 @@ export class AppModule {
 
 ## 📖 Introduction
 
-**Grappa** minimises boilerplate code required for REST clients and streamlines request and response modifications with filters. 
+**Grappa** minimises boilerplate code required for REST clients and streamlines request and response modifications with filters.
 Simply define a list of methods which reflect REST API:
 
 ```typescript
@@ -65,7 +61,7 @@ export class AppComponent {
 }
 ```
 
-Define `@BeforeRequest()` filter methods to uniformly modify data being sent to the API. 
+Define `@BeforeRequest()` filter methods to uniformly modify data being sent to the API.
 A good example could be JWT injection, but we are covering that with a separate library
 [Grappa JWT](https://github.com/elementalconcept/grappa-jwt)
 

@@ -14,13 +14,9 @@ Add `GrappaModule` to your main `AppModule` imports section.
 
 ```typescript
 @NgModule({
-  declarations: [ ... ],
   imports: [
-    ...,
     GrappaModule
-  ],
-  providers: [ ],
-  bootstrap: [ ... ]
+  ]
 })
 export class AppModule {
 }
