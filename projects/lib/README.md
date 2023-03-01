@@ -10,7 +10,7 @@ Decorator-powered REST client for **Angular 9+** and its HttpClient, plus **RxJs
 
 - With **npm**: `npm i --save @elemental-concept/grappa`
 
-Add `GrappaModule` to your main `AppModule` to imports section.
+Add `GrappaModule` to your main `AppModule` imports section.
 
 ```typescript
 @NgModule({
