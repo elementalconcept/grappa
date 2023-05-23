@@ -1,6 +1,6 @@
 {
   "name": "@elemental-concept/grappa",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Decorator-powered REST client for Angular and its HttpClient",
   "repository": {
     "type": "git",
@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/elementalconcept/grappa#readme",
   "peerDependencies": {
-    "@angular/common": ">= 9 < 16",
-    "@angular/core": ">= 9 < 16",
+    "@angular/common": ">= 9 < 17",
+    "@angular/core": ">= 9 < 17",
     "rxjs": ">= 6.0.0 < 8"
   },
   "dependencies": {
