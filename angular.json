@@ -66,18 +66,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "grappa:build"
+            "buildTarget": "grappa:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "grappa:build:production"
+              "buildTarget": "grappa:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "grappa:build"
+            "buildTarget": "grappa:build"
           }
         },
         "test": {
