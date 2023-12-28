@@ -4,6 +4,7 @@ Decorator-powered REST client for **Angular 13+** and its HttpClient, plus **RxJ
 
 | Last version | Angular Versions       | Node |
 |--------------|------------------------|------|
+| `17.0.0`     | 13 up to 17 (included) | 18   |
 | `16.0.0`     | 13 up to 16 (included) | 16   |
 | `1.1.1`      | 13 up to 15 (included) | 14   |
 
