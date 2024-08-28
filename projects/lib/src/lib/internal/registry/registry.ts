@@ -110,7 +110,8 @@ function prepareRequest(classDescriptor: ClassDescriptor, property: string) {
       headers: {},
       emptyBody: false,
       classDescriptor,
-      methodDescriptor: method
+      methodDescriptor: method,
+      reportProgress: method.options.reportProgress
     };
 
     if (method.options.hasOwnProperty('query')) {
