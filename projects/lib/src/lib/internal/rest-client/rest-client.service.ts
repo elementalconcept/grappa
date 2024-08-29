@@ -23,9 +23,9 @@ export class RestClientService<T> implements HttpRestClient<T> {
           body,
           headers: request.headers,
           params: request.params,
-          observe,
+          observe: request.reportProgress ? 'events' : observe,
           responseType: 'json',
-          reportProgress: false
+          reportProgress: request.reportProgress
         }
       );
   };
@@ -47,4 +47,3 @@ export class RestClientService<T> implements HttpRestClient<T> {
     return null;
   };
 }
-

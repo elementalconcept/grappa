@@ -1,9 +1,19 @@
+import { HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { AfterRequest, BeforeRequest, GET, ObserveOptions, POST, PUT, RestClient, RestRequest } from '@elemental-concept/grappa';
+import {
+  AfterRequest,
+  BeforeRequest,
+  GET,
+  ObserveOptions,
+  POST,
+  PUT,
+  RestClient,
+  RestRequest
+} from '@elemental-concept/grappa';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +31,9 @@ export class TestClientService {
 
   @POST('/user')
   create: (user: any) => Observable<any>;
+
+  @POST('/upload', { reportProgress: true })
+  upload: (user: any) => Observable<HttpEvent<any>>;
 
   @PUT('/user/{0}')
   update: (id: number, user: any) => Observable<any>;
