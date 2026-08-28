@@ -4,7 +4,7 @@ Decorator-powered REST client for **Angular 13+** and its HttpClient, plus **RxJ
 
 | Last version | Angular Versions       | Node | Decorators                                |
 |--------------|------------------------|------|--------------------------------------------|
-| `21.0.0`     | 13 and up              | 18+  | TC39 standard decorators (`experimentalDecorators: false`) |
+| `21.0.0`     | 17 and up              | 18+  | TC39 standard decorators (`experimentalDecorators: false`) |
 | `17.0.0`     | 13 up to 17 (included) | 18   | Legacy (`experimentalDecorators: true`)   |
 | `16.0.0`     | 13 up to 16 (included) | 16   | Legacy (`experimentalDecorators: true`)   |
 | `1.1.1`      | 13 up to 15 (included) | 14   | Legacy (`experimentalDecorators: true`)   |
