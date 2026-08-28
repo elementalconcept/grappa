@@ -1,8 +1,8 @@
-import { DELETE, GET, PATCH, POST, PUT, RestClient } from '../../public/decorators';
+import '../symbol-metadata/symbol-metadata-polyfill';
+
+import { BeforeRequest, DELETE, GET, PATCH, POST, PUT, RestClient } from '../../public/decorators';
 
 import { Registry } from './registry';
-
-import { UID } from '../uid/uid';
 
 @RestClient('http://localhost/')
 class TestClient {
@@ -22,6 +22,13 @@ class TestClient {
   deleteUser: (id: number) => any;
 }
 
+class DerivedClient extends TestClient {
+  @BeforeRequest()
+  addAuthHeader(request: any) {
+    request.headers.Authorization = 'Bearer token';
+  }
+}
+
 describe('Registry', () => {
   it('should inject REST functions', () => {
     const testClient = new TestClient();
@@ -33,8 +40,22 @@ describe('Registry', () => {
   });
 
   it('should define base URL through @RestClient', () => {
-    const uid = UID(TestClient.prototype);
-    expect((<any>Registry).classes[ uid ]).toBeDefined();
-    expect((<any>Registry).classes[ uid ].baseUrl).toBe('http://localhost/');
+    const metadata = (<any>TestClient)[ Symbol.metadata ];
+    const classDescriptor = Registry.getClassDescriptor(metadata);
+
+    expect(classDescriptor).toBeDefined();
+    expect(classDescriptor.baseUrl).toBe('http://localhost/');
+  });
+
+  it('should not leak a subclass\'s @BeforeRequest filters onto its base class', () => {
+    // eslint-disable-next-line no-unused-expressions
+    new DerivedClient();
+
+    const baseMetadata = (<any>TestClient)[ Symbol.metadata ];
+    const derivedMetadata = (<any>DerivedClient)[ Symbol.metadata ];
+
+    expect(baseMetadata).not.toBe(derivedMetadata);
+    expect(Registry.getClassDescriptor(baseMetadata).filtersBefore.length).toBe(0);
+    expect(Registry.getClassDescriptor(derivedMetadata).filtersBefore.length).toBe(1);
   });
 });

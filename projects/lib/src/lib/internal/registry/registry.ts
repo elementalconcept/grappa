@@ -1,5 +1,3 @@
-import { UID } from '../uid/uid';
-
 import { instances } from '../instances/instances';
 
 import {
@@ -18,63 +16,66 @@ import {
 export class RegistryImpl {
   private static readonly defaultRequestOptions: RequestOptions = { observe: ObserveOptions.Body };
 
-  private classes: { [ key: string ]: ClassDescriptor } = {};
+  private classes = new WeakMap<DecoratorMetadataObject, ClassDescriptor>();
 
   get defaultClient() {
     return instances.restClientInstance;
   }
 
-  registerRequest = (method: string, endpoint: string, proto: any, property: string, options: RequestOptions): void => {
-    const classDescriptor = this.getClassDescriptor(proto);
-    const methodDescriptor = new MethodDescriptor(property);
+  registerRequest = (method: string, endpoint: string, metadata: DecoratorMetadataObject, property: string | symbol, options: RequestOptions): Function => {
+    const classDescriptor = this.getClassDescriptor(metadata);
+    const propertyName = String(property);
+    const methodDescriptor = new MethodDescriptor(propertyName);
 
     methodDescriptor.method = method;
     methodDescriptor.endpoint = endpoint;
     methodDescriptor.options = Object.assign({}, RegistryImpl.defaultRequestOptions, options);
-    classDescriptor.methods[ property ] = methodDescriptor;
+    classDescriptor.methods[ propertyName ] = methodDescriptor;
 
-    proto[ property ] = prepareRequest(classDescriptor, property);
+    return prepareRequest(classDescriptor, propertyName);
   };
 
-  registerClass = (baseUrl: UrlInput, constructor: Initialisable): void => {
-    const classDescriptor = this.getClassDescriptor(constructor.prototype);
+  registerClass = (baseUrl: UrlInput, constructor: Initialisable, metadata: DecoratorMetadataObject): void => {
+    const classDescriptor = this.getClassDescriptor(metadata);
 
     classDescriptor.ctor = constructor;
     classDescriptor.baseUrl = baseUrl;
   };
 
-  getCustomMetadata = (proto: any, method: string, customKey: string) => {
-    const classDescriptor = this.getClassDescriptor(proto);
+  getCustomMetadata = (metadata: DecoratorMetadataObject, method: string, customKey: string) => {
+    const classDescriptor = this.getClassDescriptor(metadata);
 
     return this.getCustomMetadataImpl(classDescriptor, method, customKey);
   };
 
-  registerBeforeFilter = (proto: any, method: Function, applyTo: OptionalList<string>) =>
-    this.getClassDescriptor(proto).filtersBefore.push({ filterFunction: method, applyTo });
+  registerBeforeFilter = (metadata: DecoratorMetadataObject, method: Function, applyTo: OptionalList<string>) =>
+    this.getClassDescriptor(metadata).filtersBefore.push({ filterFunction: method, applyTo });
 
-  registerAfterFilter = (proto: any, method: Function, applyTo: OptionalList<string>) =>
-    this.getClassDescriptor(proto).filtersAfter.push({ filterFunction: method, applyTo });
+  registerAfterFilter = (metadata: DecoratorMetadataObject, method: Function, applyTo: OptionalList<string>) =>
+    this.getClassDescriptor(metadata).filtersAfter.push({ filterFunction: method, applyTo });
 
-  getClassDescriptor = (proto: any): ClassDescriptor => {
-    const uid = UID(proto);
-
-    let classDescriptor = this.classes[ uid ];
+  // Every class that has at least one Grappa decorator applied receives its own distinct
+  // `metadata` object (see the Symbol.metadata polyfill), so keying the WeakMap by that
+  // object identity gives each class its own ClassDescriptor — a subclass never shares
+  // (and therefore never mutates) its base class's filtersBefore/filtersAfter/methods.
+  getClassDescriptor = (metadata: DecoratorMetadataObject): ClassDescriptor => {
+    let classDescriptor = this.classes.get(metadata);
 
     if (classDescriptor === undefined) {
-      classDescriptor = new ClassDescriptor(uid, proto);
-      this.classes[ uid ] = classDescriptor;
+      classDescriptor = new ClassDescriptor(metadata);
+      this.classes.set(metadata, classDescriptor);
     }
 
     return classDescriptor;
   };
 
   // used for Grappa-Cache
-  registerAlternativeHttpClient = <T>(proto: any, client: HttpRestClient<T>) =>
-    this.getClassDescriptor(proto).restClient = client;
+  registerAlternativeHttpClient = <T>(metadata: DecoratorMetadataObject, client: HttpRestClient<T>) =>
+    this.getClassDescriptor(metadata).restClient = client;
 
   // used for Grappa-Cache
-  putCustomMetadata = (proto: any, method: string, customKey: string, data: any): void => {
-    const classDescriptor = this.getClassDescriptor(proto);
+  putCustomMetadata = (metadata: DecoratorMetadataObject, method: string, customKey: string, data: any): void => {
+    const classDescriptor = this.getClassDescriptor(metadata);
 
     if (!classDescriptor.customMetadata.hasOwnProperty(method)) {
       classDescriptor.customMetadata[ method ] = {};

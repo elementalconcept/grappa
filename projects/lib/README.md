@@ -2,17 +2,50 @@
 
 Decorator-powered REST client for **Angular 13+** and its HttpClient, plus **RxJs 6+**.
 
-| Last version | Angular Versions       | Node |
-|--------------|------------------------|------|
-| `17.0.0`     | 13 up to 17 (included) | 18   |
-| `16.0.0`     | 13 up to 16 (included) | 16   |
-| `1.1.1`      | 13 up to 15 (included) | 14   |
+| Last version | Angular Versions       | Node | Decorators                                |
+|--------------|------------------------|------|--------------------------------------------|
+| `21.0.0`     | 13 and up              | 18+  | TC39 standard decorators (`experimentalDecorators: false`) |
+| `17.0.0`     | 13 up to 17 (included) | 18   | Legacy (`experimentalDecorators: true`)   |
+| `16.0.0`     | 13 up to 16 (included) | 16   | Legacy (`experimentalDecorators: true`)   |
+| `1.1.1`      | 13 up to 15 (included) | 14   | Legacy (`experimentalDecorators: true`)   |
+
+### ⚠️ Breaking change in `21.0.0`: standard decorators
+
+As of `21.0.0`, Grappa's decorators (`@RestClient`, `@GET`/`@POST`/`@PUT`/`@PATCH`/`@DELETE`,
+`@BeforeRequest`/`@AfterRequest`) are written against TypeScript's standard (TC39 stage-3) decorators
+instead of the legacy `experimentalDecorators` proposal. This requires:
+
+- **TypeScript 5.2 or later**.
+- `"experimentalDecorators": false` (or the flag removed) in your app's `tsconfig.json`. A single
+  TypeScript compilation cannot mix legacy and standard decorators, so this is required project-wide,
+  not just for files that use Grappa.
+
+If you can't yet move off `experimentalDecorators: true`, stay on the `17.x` release line.
 
 ## 🛠 Installation
 
 - With **npm**: `npm i --save @elemental-concept/grappa`
 
-Add `GrappaModule` to your main `AppModule` to imports section.
+### Standalone (`bootstrapApplication`)
+
+Add `provideGrappa()` to your app's providers:
+
+```typescript
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideGrappa(),
+    // ...
+  ]
+});
+```
+
+`provideGrappa()` includes `provideHttpClient()`, so you don't need to call it separately unless
+you want to configure it yourself (interceptors, fetch backend, etc.) — see
+[Using your own `provideHttpClient()`](#using-your-own-providehttpclient) below.
+
+### NgModule-based apps
+
+Add `GrappaModule` to your main `AppModule`'s imports section:
 
 ```typescript
 @NgModule({
@@ -27,6 +60,16 @@ Add `GrappaModule` to your main `AppModule` to imports section.
 export class AppModule {
 }
 ```
+
+`GrappaModule` provides its own `provideHttpClient()` internally, so `HttpClient` is available
+without a separate `HttpClientModule` import.
+
+### Using your own `provideHttpClient()`
+
+If your app already calls `provideHttpClient()` itself — to configure interceptors, the fetch
+backend, etc. — that's fine to use alongside `provideGrappa()` / `GrappaModule`. Angular resolves
+duplicate `HttpClient` provider registrations to whichever was registered last, rather than
+throwing an error, so just double-check your own configuration still applies as expected.
 
 ## 📖 Introduction
 
