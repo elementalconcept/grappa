@@ -1,6 +1,6 @@
 import '../symbol-metadata/symbol-metadata-polyfill';
 
-import { BeforeRequest, DELETE, GET, PATCH, POST, PUT, RestClient } from '../../public/decorators';
+import { AfterRequest, BeforeRequest, DELETE, GET, PATCH, POST, PUT, RestClient } from '../../public/decorators';
 
 import { Registry } from './registry';
 
@@ -27,6 +27,40 @@ class DerivedClient extends TestClient {
   addAuthHeader(request: any) {
     request.headers.Authorization = 'Bearer token';
   }
+}
+
+@RestClient('http://grandparent/')
+class GrandparentClient {
+  @BeforeRequest()
+  grandparentBefore() { /* noop */ }
+
+  @AfterRequest()
+  grandparentAfter() { /* noop */ }
+
+  @GET('/ping')
+  ping: () => any;
+}
+
+class ParentClient extends GrandparentClient {
+  @BeforeRequest()
+  parentBefore() { /* noop */ }
+
+  @AfterRequest()
+  parentAfter() { /* noop */ }
+
+  @GET('/parent-ping')
+  parentPing: () => any;
+}
+
+class ChildClient extends ParentClient {
+  @BeforeRequest()
+  childBefore() { /* noop */ }
+
+  @AfterRequest()
+  childAfter() { /* noop */ }
+
+  @GET('/child-ping')
+  childPing: () => any;
 }
 
 describe('Registry', () => {
@@ -57,5 +91,34 @@ describe('Registry', () => {
     expect(baseMetadata).not.toBe(derivedMetadata);
     expect(Registry.getClassDescriptor(baseMetadata).filtersBefore.length).toBe(0);
     expect(Registry.getClassDescriptor(derivedMetadata).filtersBefore.length).toBe(1);
+  });
+
+  it('should resolve baseUrl for a subclass that declares no @RestClient of its own', () => {
+    // eslint-disable-next-line no-unused-expressions
+    new DerivedClient();
+
+    const derivedMetadata = (<any>DerivedClient)[ Symbol.metadata ];
+
+    expect(Registry.resolveBaseUrl(derivedMetadata)).toBe('http://localhost/');
+  });
+
+  it('should run @BeforeRequest filters most-derived-first', () => {
+    // eslint-disable-next-line no-unused-expressions
+    new ChildClient();
+
+    const childMetadata = (<any>ChildClient)[ Symbol.metadata ];
+    const names = Registry.resolveFiltersBefore(childMetadata).map(f => f.filterFunction.name);
+
+    expect(names).toEqual([ 'childBefore', 'parentBefore', 'grandparentBefore' ]);
+  });
+
+  it('should run @AfterRequest filters base-first', () => {
+    // eslint-disable-next-line no-unused-expressions
+    new ChildClient();
+
+    const childMetadata = (<any>ChildClient)[ Symbol.metadata ];
+    const names = Registry.resolveFiltersAfter(childMetadata).map(f => f.filterFunction.name);
+
+    expect(names).toEqual([ 'grandparentAfter', 'parentAfter', 'childAfter' ]);
   });
 });

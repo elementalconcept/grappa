@@ -40,6 +40,31 @@ These are required — the package will not compile or will misbehave without th
 6. If you use grappa-jwt, also bump it to
 version `^21.0.0`
 
+7. **Wrap any class decorator argument that references the class's own static members in an
+   arrow function.** For example:
+
+   ```ts
+   // Before (legacy decorators) — worked fine:
+   @Authenticate()
+   @RestClient(SomeApiService.getApiUrl)
+   export class SomeApiService { ... }
+
+   // After (TC39 standard decorators) — must become:
+   @Authenticate()
+   @RestClient(() => SomeApiService.getApiUrl)
+   export class SomeApiService { ... }
+   ```
+
+   Under TC39 semantics, the arguments to a class decorator are evaluated *before* the class
+   binding itself is initialized, so referencing `SomeApiService` by name inside the decorator
+   argument list now hits the temporal dead zone (`TS2449: Class 'SomeApiService' used before its
+   declaration`). Deferring the reference behind a closure (`() => SomeApiService.getApiUrl`)
+   defers evaluation until the decorator actually calls it, by which point the class binding is
+   initialized. `@RestClient`'s `baseUrl` parameter already accepts a `UrlFactory`
+   (`() => string`) alongside a plain string, so this requires no grappa changes — just wrap the
+   self-reference at the call site. Any other decorator argument that self-references the class
+   the same way needs the same treatment.
+
 ## Optional Improvements
 
 Not required, but worth doing:
@@ -60,4 +85,29 @@ Not required, but worth doing:
    resolves duplicate `HttpClient` provider registrations to whichever was registered last rather
    than throwing an error, so just double-check your own configuration (interceptors, fetch
    backend, etc.) still applies as expected.
+
+## Troubleshooting
+
+### `TS1240: Unable to resolve signature of property decorator when called as an expression`
+
+If you forget step 2 above (`"experimentalDecorators": false`) in a tsconfig that compiles
+Grappa-decorated code, TypeScript keeps interpreting `@GET`/`@POST`/etc. as legacy decorators and
+fails to match their (now standard-decorator) signature. It looks like this:
+
+```
+Error: apps/example/src/app/api/services/example.service.ts:14:4 - error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'ExampleService' is not assignable to parameter of type 'undefined'.
+
+14   @POST('/some/endpoint')
+      ~~~~~~~~~~~~~~~~~~~~
+```
+
+The type named in the second line will always be the enclosing class (here `ExampleService`) —
+that's the tell that TypeScript is still in legacy decorator mode and passing the class
+prototype/constructor where a standard decorator expects `undefined`.
+
+**Fix:** set `"experimentalDecorators": false` (or remove the flag) in the tsconfig that reports
+the error, and in any other tsconfig in the same project that compiles the same source (e.g. both
+`tsconfig.app.json` and `tsconfig.spec.json`). Do not change the decorator call site — the fix is
+compiler configuration only.
 
