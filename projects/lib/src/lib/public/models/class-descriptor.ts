@@ -14,7 +14,6 @@ export class ClassDescriptor {
 
   restClient?: HttpRestClient<any>;
 
-  constructor(public readonly uid: number,
-              public readonly proto: Object) {
+  constructor(public readonly metadata: DecoratorMetadataObject) {
   }
 }

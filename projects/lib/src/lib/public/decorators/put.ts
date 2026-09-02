@@ -1,8 +1,10 @@
 import { Registry } from '../../internal/registry/registry';
 import { RequestOptions } from '../models';
 
-export function PUT(endpoint: string, options: RequestOptions = {}) {
-  return (target: any, property: string) => {
-    Registry.registerRequest('PUT', endpoint, target, property, options);
+export function PUT<T extends (...args: any[]) => any>(endpoint: string, options: RequestOptions = {}) {
+  return (value: undefined, context: ClassFieldDecoratorContext<unknown, T>): () => T => {
+    const request = Registry.registerRequest('PUT', endpoint, context.metadata, context.name, options) as T;
+
+    return () => request;
   };
 }

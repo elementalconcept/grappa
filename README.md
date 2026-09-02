@@ -2,17 +2,50 @@
 
 Decorator-powered REST client for **Angular 13+** and its HttpClient, plus **RxJs 6+**.
 
-| Last version | Angular Versions       | Node |
-|--------------|------------------------|------|
-| `17.0.0`     | 13 up to 17 (included) | 18   |
-| `16.0.0`     | 13 up to 16 (included) | 16   |
-| `1.1.1`      | 13 up to 15 (included) | 14   |
+| Last version | Angular Versions       | Node | Decorators                                |
+|--------------|------------------------|------|--------------------------------------------|
+| `21.0.0`     | 17 and up              | 18+  | TC39 standard decorators (`experimentalDecorators: false`) |
+| `17.0.0`     | 13 up to 17 (included) | 18   | Legacy (`experimentalDecorators: true`)   |
+| `16.0.0`     | 13 up to 16 (included) | 16   | Legacy (`experimentalDecorators: true`)   |
+| `1.1.1`      | 13 up to 15 (included) | 14   | Legacy (`experimentalDecorators: true`)   |
+
+### ⚠️ Breaking change in `21.0.0`: standard decorators
+
+As of `21.0.0`, Grappa's decorators (`@RestClient`, `@GET`/`@POST`/`@PUT`/`@PATCH`/`@DELETE`,
+`@BeforeRequest`/`@AfterRequest`) are written against TypeScript's standard (TC39 stage-3) decorators
+instead of the legacy `experimentalDecorators` proposal. This requires:
+
+- **TypeScript 5.2 or later**.
+- `"experimentalDecorators": false` (or the flag removed) in your app's `tsconfig.json`. A single
+  TypeScript compilation cannot mix legacy and standard decorators, so this is required project-wide,
+  not just for files that use Grappa.
+
+If you can't yet move off `experimentalDecorators: true`, stay on the `17.x` release line. See [Migration.md](./MIGRATION.md) for migrating a client application that previous used an older release.
 
 ## 🛠 Installation
 
 - With **npm**: `npm i --save @elemental-concept/grappa`
 
-Add `GrappaModule` to your main `AppModule` to imports section.
+### Standalone (`bootstrapApplication`)
+
+Add `provideGrappa()` to your app's providers:
+
+```typescript
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideGrappa(),
+    // ...
+  ]
+});
+```
+
+`provideGrappa()` includes `provideHttpClient()`, so you don't need to call it separately unless
+you want to configure it yourself (interceptors, fetch backend, etc.) — see
+[Using your own `provideHttpClient()`](#using-your-own-providehttpclient) below.
+
+### NgModule-based apps
+
+Add `GrappaModule` to your main `AppModule`'s imports section:
 
 ```typescript
 @NgModule({
@@ -27,6 +60,16 @@ providers: [ ],
 export class AppModule {
 }
 ```
+
+`GrappaModule` provides its own `provideHttpClient()` internally, so `HttpClient` is available
+without a separate `HttpClientModule` import.
+
+### Using your own `provideHttpClient()`
+
+If your app already calls `provideHttpClient()` itself — to configure interceptors, the fetch
+backend, etc. — that's fine to use alongside `provideGrappa()` / `GrappaModule`. Angular resolves
+duplicate `HttpClient` provider registrations to whichever was registered last, rather than
+throwing an error, so just double-check your own configuration still applies as expected.
 
 ## 📖 Introduction
 
@@ -152,6 +195,39 @@ export class UserService {
 
 ---
 
+### `Registry.registerAlternativeHttpClient(metadata, client)`
+
+By default, every REST method dispatches through the single `HttpRestClient` instance registered via
+`provideGrappa()` / `GrappaModule`. `Registry.registerAlternativeHttpClient` overrides that default for one
+class (and, by inheritance, its subclasses that don't register their own), letting you route a specific
+client's requests through a custom `HttpRestClient` implementation instead — for example to add caching,
+retries, or an entirely different transport.
+
+```typescript
+import { HttpRestClient, ObserveOptions, Registry, RestRequest } from '@elemental-concept/grappa';
+import { Observable } from 'rxjs';
+
+class CachingHttpRestClient implements HttpRestClient<any> {
+  request(request: RestRequest, observe: ObserveOptions): Observable<any> {
+    // ...serve from cache, or delegate to the default client and cache the result
+  }
+}
+
+@RestClient('http://example.com/api/')
+export class UserService {
+  @GET('/users')
+  list: () => Observable<User[]>;
+}
+
+Registry.registerAlternativeHttpClient((<any>UserService)[ Symbol.metadata ], new CachingHttpRestClient());
+```
+
+The `metadata` argument is the class's `Symbol.metadata` object, populated once any Grappa decorator (such as
+`@RestClient` or `@GET`) has been applied to it. This is the same extension point used internally by
+[Grappa-Cache](https://github.com/elementalconcept/grappa-cache).
+
+---
+
 ### `@GET(endpoint: string, options: RequestOptions = {})`
 
 Makes HTTP GET request to the specified end-point. Arguments passed to the decorated function can be inserted into
@@ -225,6 +301,13 @@ beforeFilter(request: RestRequest) {
 }
 ```
 
+Multiple before request filters run in the
+order they are declared when declared in
+the same class. i.e. the first filter
+receives the request created from the 
+caller's argumenst and the second recieves
+the request as modified by the first.
+
 ---
 
 ### `@AfterRequest(applyTo: OptionalList<string> = null)`
@@ -237,6 +320,12 @@ afterFilter(response: Observable<HttpResponse<any>>) {
   return response.map(r => r.body.value);
 }
 ```
+
+Multiple after response filters run in the
+order they are declared when declared in
+the same class. i.e. the first filter
+is passed the raw response and the
+second receives the output of the first.
 
 ---
 
@@ -318,3 +407,29 @@ beforeFilter(request: RestRequest) {
   // This filter function will only apply to create() calls
 }
 ```
+
+## Inheritence
+
+When classes B and C inherit from class A which uses Grappa 
+decorators:
+
+ - B and C inherit A's registered rest client, base url,
+   before filters and after filters but can override them.
+
+ - Band C inherit A's methods via normal javascript prototype inheritence
+ 
+ - New rest clients / filters in C would not affect calls
+   made against instances of A or B.
+
+ - Before filters are executed in the order Child -> Parent 
+   -> Grandparent.
+
+ - After filters are executed in the order Grandparent ->
+   Parent -> Child.
+
+- If a child wants to intercept the HTTP
+  requset immediately before it is executed
+  after the before filters of its parent
+  have run, it can use `registerAlternativeHttpClient` to inject
+  changes to the request immediately before
+  it is made

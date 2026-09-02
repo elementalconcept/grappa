@@ -11,6 +11,7 @@ export interface RestRequest {
   emptyBody: boolean;
   classDescriptor: ClassDescriptor;
   methodDescriptor: MethodDescriptor;
+  reportProgress?: boolean;
 
   params?: { [ param: string ]: string };
 }

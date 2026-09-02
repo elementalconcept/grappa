@@ -17,3 +17,17 @@
 
 <h5>{{ "@PUT('/user/{0}')" }}</h5>
 <pre *ngIf="updateResponse">{{ updateResponse | json }}</pre>
+
+<h5>File Upload</h5>
+
+<form [formGroup]="form" (ngSubmit)="onFileUpload()">
+  <p>
+    <input type="file"
+           [formControl]="file"
+           (change)="onFileSelect($event)">
+  </p>
+
+  <p>
+    <button type="submit">Upload</button>
+  </p>
+</form>
